@@ -8,7 +8,7 @@ This repository owns:
 
 - `levelab.org` institutional and acquisition experience
 - `app.levelab.org` member experience
-- Corpo Forte 40+ program UI
+- Corpo Forte program UI
 - Check-up Corpo Forte lead magnet
 - onboarding
 - member progress, trackers and quizzes
@@ -22,7 +22,7 @@ This repository owns:
 Content / Ads
   -> Check-up Corpo Forte
   -> Result + LIA
-  -> Corpo Forte 40+ offer
+  -> Corpo Forte offer
   -> Onboarding
   -> Week experience:
      micro-lesson
@@ -31,6 +31,8 @@ Content / Ads
      -> LIA
      -> quiz
      -> commitment
+     -> 7-day plan
+     -> check-in
      -> check-out
 ```
 
@@ -54,7 +56,7 @@ The frontend must not hard-code clinical claims or duplicate the canonical conte
 ## Initial implementation tracks
 
 1. LeveLab design system
-2. Corpo Forte 40+ program shell
+2. Corpo Forte program shell
 3. Check-up Corpo Forte funnel
 4. Onboarding experience
 5. LIA chat integration
