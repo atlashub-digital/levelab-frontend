@@ -37,6 +37,36 @@ At completion:
 4. include screenshots and a concise technical summary in the PR;
 5. document any mocked API/data dependency.
 
+## Premium content release — use these as production content
+
+The digital content is no longer placeholder-only.
+
+### Corpo Forte
+- **Guide Premium v2.0 FINAL — 105 pages**
+- **Workbook Premium v2.0 FINAL — 77 pages**
+- Release folder: https://drive.google.com/drive/folders/1LJL8jIxp-qHIv7aRD9gsw8u--OiJcvqF
+- Guide: https://drive.google.com/file/d/1Cj1yLncOgBaTIjIDwu40SyhWAq5IZp3g/view
+- Workbook: https://drive.google.com/file/d/1rYzmfKL2HFGbJbb3SEpJ73LmDTOgYecC/view
+
+### Força na Caneta
+- **Premium v2.0 FINAL — 38 pages**
+- PDF: https://drive.google.com/file/d/1yABUENC1vuGWJUIlJxsJ5AMercYLzRQU/view
+- Product folder: https://drive.google.com/drive/folders/1N3jHlLPNYSiHXMGhbPyFCeJZiigDxP4q
+
+The old pre-publication Corpo Forte exports have been archived and must not be used.
+
+**Critical:** the first public Reader must use the real released content, not lorem ipsum or a 2-page demo.
+
+If Drive download is accessible in your environment, copy the three released PDFs into a stable local web asset location such as:
+```
+public/content/corpo-forte/guia-v2.pdf
+public/content/corpo-forte/workbook-v2.pdf
+public/content/forca-na-caneta/forca-na-caneta-v2.pdf
+```
+
+If Drive download is not accessible, build the Reader with a content URL adapter and document the exact expected local filenames so the files can be injected without code changes.
+
+
 ## Product and brand hierarchy
 
 ```
@@ -342,7 +372,7 @@ Buttons:
 
 Build a high-quality digital reader shell.
 
-The goal is to be ready for API-driven approved content later.
+The V1 Reader must be usable now with the released content. It should also be ready for API-driven structured content later.
 
 ### Layout
 
@@ -358,19 +388,24 @@ Mobile:
 
 ### Reader capabilities
 
-- week/chapter navigation;
-- progress bar;
-- table of contents;
-- estimated reading time;
-- “Ouvir” button placeholder;
-- bookmark;
-- font size controls;
-- light editorial theme;
-- accessible keyboard navigation;
+Implement a **production-capable PDF Reader V1** using PDF.js / react-pdf or an equivalent client-side renderer:
+- actual released PDF content;
+- page thumbnails / table of contents;
+- current page and total pages;
+- page jump;
+- zoom;
+- fit width / fit page;
+- fullscreen;
+- download/open original;
+- progress persistence for non-sensitive reading state;
+- keyboard navigation;
+- mobile swipe-friendly layout;
 - “Abrir Workbook” action;
 - “Conversar com a LIA sobre esta semana” action;
-- next/previous;
-- content version badge.
+- content version badge;
+- optional chapter/week index mapped to relevant page ranges.
+
+Do not use a raw Google Drive iframe as the final UX if a local/static PDF asset is available.
 
 ### Content model
 
@@ -387,9 +422,13 @@ Provide:
 - `MockLearningContentProvider`
 - future `ApiLearningContentProvider` stub
 
-Do NOT embed the entire canonical Notion manuscript inside React components.
+Do NOT embed the canonical manuscript inside React components.
 
-Use concise demonstration fixtures only.
+For V1:
+- use the released PDFs as the authoritative reading assets;
+- keep chapter metadata, labels and page ranges in versioned TypeScript/JSON;
+- keep the provider interface so a future HTML/API reader can replace PDF rendering without changing routes;
+- no lorem ipsum and no fake content.
 
 ## 8-week learning area
 
@@ -406,11 +445,12 @@ Microaula
   -> Check-out
 ```
 
-For now:
-- use mock/demo state;
+For V1:
+- use real released reading content;
 - store no sensitive health information in localStorage;
-- local progress may be UI-only/demonstration;
-- clearly mark member persistence as API integration pending.
+- only reading progress/bookmark UI state may be local;
+- member/account persistence remains API integration pending;
+- exercises may render as read-only/print-oriented until backend forms are integrated.
 
 ## Força na Caneta
 
