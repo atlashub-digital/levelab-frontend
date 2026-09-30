@@ -29,14 +29,17 @@
 - RC1 release record  
   https://app.notion.com/p/3e930a325ec481858943ddd2efc9bf1f?pvs=204
 
-### Current status
+### Current status — Premium Release
 
-RC1 binaries were generated previously but are not currently present in the production Drive folders. The canonical content has evolved beyond RC1.
+The old RC1/RC2 pre-publication exports have been archived.
 
-Current baseline:
-- **Corpo Forte v1.2 Expanded RC**
-- Guide and Workbook are still pre-publication pending professional/compliance gates.
-- Do not expose unfinished or clinically pending copy as approved public content.
+Current premium release:
+- **Corpo Forte — Guia Premium v2.0 FINAL: 105 pages**
+- **Corpo Forte — Workbook Premium v2.0 FINAL: 77 pages**
+- Source content remains the expanded 8-week editorial master.
+- Public framing remains educational/wellness. Medication, diagnosis, dose adjustment and individualized clinical guidance are outside the product scope.
+
+The visual pagination is intentionally larger than the previous 62/29-page pre-publication exports because the final edition uses a premium cartilha layout with chapter openers, whitespace, worksheet space and callout treatment.
 
 ### Drive
 
@@ -47,17 +50,25 @@ Corpo Forte:
 https://drive.google.com/drive/folders/1Alx1IUbns4gEtC3CuTUMXGCLa9_FTrsZ
 
 Subfolders:
-- Guia: https://drive.google.com/drive/folders/1XKW1wewmGpsfzhsgJN_bqFapxruMcQjD
-- Workbook: https://drive.google.com/drive/folders/1YCqLZqGxQQzp5nPQ6Jlw6VNn3UUQh52_
+- Final premium release: https://drive.google.com/drive/folders/1LJL8jIxp-qHIv7aRD9gsw8u--OiJcvqF
+- Guia master: https://drive.google.com/drive/folders/1XKW1wewmGpsfzhsgJN_bqFapxruMcQjD
+- Workbook master: https://drive.google.com/drive/folders/1YCqLZqGxQQzp5nPQ6Jlw6VNn3UUQh52_
 - Web/App: https://drive.google.com/drive/folders/1eAd9QEeS9BmHMWWFMtv7-6mNViQVEDdV
 - Campaign exports: https://drive.google.com/drive/folders/1T4de__OJ5PMPstxgKZpjYrv_JYCSKRN6
+- Archived RC2/pre-publication files: https://drive.google.com/drive/folders/1i4Nwh-3OLYSynOKpMoLxHFeKg6Q_yXa0
 
-At the time of this manifest, the four Corpo Forte subfolders are empty.
+Final Drive files:
+- Guia Premium v2.0 FINAL: https://drive.google.com/file/d/1Cj1yLncOgBaTIjIDwu40SyhWAq5IZp3g/view
+- Workbook Premium v2.0 FINAL: https://drive.google.com/file/d/1rYzmfKL2HFGbJbb3SEpJ73LmDTOgYecC/view
 
 ## Força na Caneta
 
-Current premium PDF in Drive root:
-https://drive.google.com/file/d/1yABUENC1vuGWJUIlJxsJ5AMercYLzRQU/view?usp=drivesdk
+Current premium final:
+- **LeveLab — Força na Caneta Premium v2.0 FINAL: 38 pages**
+- PDF: https://drive.google.com/file/d/1yABUENC1vuGWJUIlJxsJ5AMercYLzRQU/view
+- Folder: https://drive.google.com/drive/folders/1N3jHlLPNYSiHXMGhbPyFCeJZiigDxP4q
+- Final PDF folder: https://drive.google.com/drive/folders/1tFnAHsDcMh6cc0_7gSWHHuFg5gJQabEF
+- Web Reader workspace: https://drive.google.com/drive/folders/1aTXN9U_84Qp2m_9O1Ihe_5hppw5InL8l
 
 Product should be treated as a separate LeveLab educational product/guide, not as the public identity of Corpo Forte.
 
@@ -86,4 +97,8 @@ Do not:
 - expose private Drive files as public dependencies;
 - put service keys in the browser.
 
-Use local fixture content for layout. We will later promote approved content into the LeveLab Backend API and bind the reader to that runtime source.
+The final PDF editions are now available and should be used as the visual/content reference for the first Reader implementation.
+
+For V1, the website may ship with static, versioned reader content generated from the approved editorial release, behind a content-provider adapter. The later backend pass will move persistence, entitlements and member progress to the LeveLab API.
+
+Do not extract or transform clinical/health claims beyond the supplied release; preserve the editorial wording unless explicitly reviewed.
