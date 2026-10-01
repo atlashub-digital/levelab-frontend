@@ -5,6 +5,7 @@ import Link from 'next/link';
 import {
   ChevronRight,
   ChevronLeft,
+  ChevronDown,
   ZoomIn,
   ZoomOut,
   Maximize2,
@@ -18,10 +19,13 @@ import {
   Timer,
   CheckCircle2,
   Circle,
+  ArrowRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LIAAvatar } from '@/components/blocks/LIAAvatar';
 import { Badge } from '@/components/ui/Card';
+import { Leaf } from '@/components/blocks/ProductVisual';
+import { ValueBadge } from '@/components/blocks/ValueBadge';
 import type { ModuleContent, ReaderAsset } from '@/lib/content/readers';
 import type { ProgramMeta, ProgramWeek } from '@/lib/content/programs';
 import type { LocaleCopy } from '@/lib/i18n';
@@ -38,6 +42,22 @@ import type { LocaleCopy } from '@/lib/i18n';
  *   - pages.forca_na_caneta_reader.right_panel: progress, 7-day navigation,
  *     today checklist (UI only until member backend integration), recipe
  *     shortcuts, LIA CTA.
+ *
+ * Task D maquette-faithful polish:
+ *   - Breadcrumb: Programas › Corpo Forte › Reader (no Início first link).
+ *   - Week tabs: rectangular two-line buttons (Semana N + short title),
+ *     active = solid forest, inactive = light grey + border.
+ *   - Left sidebar header: "Capítulos da Semana N" + right chevron.
+ *   - Center viewer: large serif "0N" header + serif title + uppercase
+ *     premium subheader (week focus only — no invented clinical claims),
+ *     Leaf motif along the LEFT edge of the page.
+ *   - Toolbar: page input field flanked by prev/next + `- 100% +` zoom.
+ *   - Right rail progress: "O seu progresso" + "Semana N de 8" + pages read
+ *     + % bar + primary "Continuar leitura →" button (advances page).
+ *   - Right rail summary: interactive accordion 1–4 with chevrons,
+ *     numbered (1) O que vai aprender (2) Principais conceitos
+ *     (3) Experimento da semana (4) Check-out.
+ *   - ValueBadge "Mais energia" overlapping the bottom-right of the viewer.
  *
  * Mock checklist + recipes are UI-only — NO backend, NO sensitive health data.
  */
@@ -62,6 +82,7 @@ export function ReaderShell({
   const [fs, setFs] = useState(false);
   const [query, setQuery] = useState('');
   const [checkedItems, setCheckedItems] = useState<Set<number>>(() => new Set());
+  const [openSummary, setOpenSummary] = useState<number>(0);
   const pages = mod.pages;
   const totalPages = asset?.totalPages ?? pages.length;
   const current = pages[Math.min(pageIdx, pages.length - 1)];
@@ -72,6 +93,7 @@ export function ReaderShell({
       : '/programas/forca-na-caneta/reader';
   const unit = program.slug === 'corpo-forte' ? 'Semana' : 'Dia';
   const unitShort = program.slug === 'corpo-forte' ? 'S' : 'D';
+  const totalUnits = program.slug === 'corpo-forte' ? 8 : 7;
 
   // Mock "search results" — non-functional search field per spec (filter
   // nothing in V1). This just highlights the query string visually when it
@@ -91,6 +113,7 @@ export function ReaderShell({
   }
 
   const progress = Math.round(((pageIdx + 1) / pages.length) * 100);
+  const absolutePage = mod.week.pageStart + pageIdx;
 
   // Força na Caneta mock checklist items — UI only. NO sensitive data.
   const forcaChecklist: { id: number; label: string }[] = [
@@ -105,16 +128,40 @@ export function ReaderShell({
     { id: 'r2', title: 'Salada que sustenta a tarde', time: '15 min' },
   ];
 
+  // Maquette-style summary accordion — numbered 1-4 with chevrons.
+  // Content from mod.week fields (summary/focus/experiment) — no invented
+  // clinical content. The "Check-out" item is a soft close + LIA CTA.
+  const summaryItems = [
+    {
+      n: 1,
+      title: 'O que vai aprender',
+      body: mod.week.summary,
+    },
+    {
+      n: 2,
+      title: 'Principais conceitos',
+      body: mod.week.focus,
+    },
+    {
+      n: 3,
+      title: 'Experimento da semana',
+      body: mod.week.experiment,
+    },
+    {
+      n: 4,
+      title: 'Check-out',
+      body:
+        'Conversar com a LIA sobre esta semana e levar o aprendizado para a rotina. Conteúdo educativo — não substitui orientação clínica.',
+    },
+  ];
+
   return (
     <div className={cn('flex flex-col', fs && 'fixed inset-0 z-50 bg-ivory')}>
       {!fs ? (
         <div className="border-b border-forest/10 bg-cream/40">
           <div className="shell py-6">
+            {/* Maquette: breadcrumb = Programas › Corpo Forte › Reader (no Início first link). */}
             <nav className="flex flex-wrap items-center gap-1.5 text-xs text-muted" aria-label="Breadcrumb">
-              <Link href={`/${locale}`} className="hover:text-forest">
-                {copy.nav.home}
-              </Link>
-              <ChevronRight className="h-3 w-3" />
               <Link href={`/${locale}/programas`} className="hover:text-forest">
                 {copy.nav.programs}
               </Link>
@@ -150,7 +197,7 @@ export function ReaderShell({
         </div>
       ) : null}
 
-      {/* Week tabs */}
+      {/* Maquette: week tabs as rectangular two-line buttons. */}
       <div className="border-b border-forest/10 bg-ivory">
         <div className="shell flex gap-2 overflow-x-auto py-3 scrollbar-soft">
           {weeks.map((w) => {
@@ -160,15 +207,16 @@ export function ReaderShell({
                 key={w.slug}
                 href={`/${locale}${readerPath}?semana=${w.slug}`}
                 className={cn(
-                  'inline-flex h-9 items-center gap-2 rounded-full px-4 text-sm font-medium transition-colors',
-                  active ? 'bg-forest text-white' : 'border border-forest/15 text-forest hover:bg-forest/5',
+                  'inline-flex min-w-[124px] flex-col gap-0.5 rounded-xl px-4 py-2 text-left transition-colors',
+                  active
+                    ? 'bg-forest text-white shadow-soft'
+                    : 'border border-forest/15 bg-cream/40 text-forest hover:border-forest/40 hover:bg-forest/5',
                 )}
               >
-                <span className="font-display">
-                  {unitShort}
-                  {w.n}
+                <span className="text-[11px] font-semibold uppercase tracking-wider opacity-80">
+                  {unit} {w.n}
                 </span>
-                <span className="hidden sm:inline">{w.title}</span>
+                <span className="text-sm font-medium leading-tight">{w.title}</span>
               </Link>
             );
           })}
@@ -176,7 +224,7 @@ export function ReaderShell({
       </div>
 
       <div className="shell grid flex-1 gap-6 py-8 lg:grid-cols-[260px_1fr_300px]">
-        {/* Left sidebar — chapters with thumbnails + search */}
+        {/* Left sidebar — search + chapters with thumbnail tiles */}
         <aside className="hidden lg:block">
           <div className="sticky top-24 flex flex-col gap-4">
             {/* Search */}
@@ -204,9 +252,18 @@ export function ReaderShell({
               ) : null}
             </div>
 
-            {/* Chapters with thumbnail tiles */}
+            {/* Chapters with thumbnail tiles — maquette: header with right chevron. */}
             <div className="rounded-3xl border border-forest/10 bg-white p-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted">Capítulos</p>
+              <button
+                type="button"
+                className="flex w-full items-center justify-between text-left"
+                aria-expanded="true"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted">
+                  Capítulos da {unit} {mod.week.n}
+                </p>
+                <ChevronRight className="h-4 w-4 text-forest" />
+              </button>
               <ul className="mt-3 flex flex-col">
                 {weeks.map((w) => {
                   const active = w.slug === mod.week.slug;
@@ -219,18 +276,22 @@ export function ReaderShell({
                           active ? 'bg-forest/8' : 'hover:bg-forest/5',
                         )}
                       >
-                        {/* Thumbnail tile — visual only */}
+                        {/* Document tile thumbnail — visual only. */}
                         <span
                           className={cn(
-                            'relative mt-0.5 flex h-12 w-10 shrink-0 flex-col items-center justify-center rounded-md border text-[9px] font-medium',
+                            'relative mt-0.5 flex h-14 w-11 shrink-0 flex-col items-center justify-start gap-1 rounded-md border p-1.5',
                             active
                               ? 'border-forest bg-forest text-white'
                               : 'border-forest/15 bg-cream/50 text-forest',
                           )}
                         >
-                          <span className="font-display text-[11px] leading-none">{unitShort}{w.n}</span>
-                          <span className="mt-1 inline-block h-1 w-6 rounded-full bg-current opacity-30" />
-                          <span className="mt-0.5 inline-block h-1 w-4 rounded-full bg-current opacity-20" />
+                          <span className="font-display text-[11px] leading-none">
+                            {unitShort}
+                            {w.n}
+                          </span>
+                          <span className="h-px w-full bg-current opacity-30" />
+                          <span className="h-px w-3/4 bg-current opacity-20" />
+                          <span className="h-px w-1/2 bg-current opacity-20" />
                         </span>
                         <span>
                           <span
@@ -253,7 +314,7 @@ export function ReaderShell({
 
         {/* Center — page renderer */}
         <div className="flex min-w-0 flex-col">
-          {/* Toolbar */}
+          {/* Maquette: toolbar with page input field + `- 100% +` zoom. */}
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-forest/10 bg-white p-2 shadow-soft">
             <div className="flex items-center gap-1">
               <ToolbarBtn
@@ -263,9 +324,24 @@ export function ReaderShell({
               >
                 <ChevronLeft className="h-4 w-4" />
               </ToolbarBtn>
-              <span className="px-2 text-xs text-muted">
-                Página {current ? mod.week.pageStart + pageIdx : 0} / {totalPages}
-              </span>
+              <div className="inline-flex items-center gap-1 rounded-full border border-forest/15 px-2">
+                <input
+                  type="number"
+                  min={1}
+                  max={totalPages}
+                  value={absolutePage}
+                  onChange={(e) => {
+                    const n = Number(e.target.value);
+                    if (!Number.isFinite(n)) return;
+                    const clamped = Math.max(1, Math.min(totalPages, n));
+                    const newIdx = Math.max(0, Math.min(pages.length - 1, clamped - mod.week.pageStart));
+                    setPageIdx(newIdx);
+                  }}
+                  className="h-8 w-12 bg-transparent text-center text-sm font-medium text-ink focus:outline-none"
+                  aria-label="Página atual"
+                />
+                <span className="text-xs text-muted">/ {totalPages}</span>
+              </div>
               <ToolbarBtn
                 label={copy.common.next}
                 onClick={() => setPageIdx((i) => Math.min(pages.length - 1, i + 1))}
@@ -276,9 +352,9 @@ export function ReaderShell({
             </div>
             <div className="flex items-center gap-1">
               <ToolbarBtn label={copy.common.zoomOut} onClick={() => setZoom((z) => Math.max(60, z - 10))}>
-                <ZoomOut className="h-4 w-4" />
+                <span className="text-base font-semibold leading-none">–</span>
               </ToolbarBtn>
-              <span className="px-2 text-xs text-muted">{zoom}%</span>
+              <span className="px-2 text-xs font-medium text-ink">{zoom}%</span>
               <ToolbarBtn label={copy.common.zoomIn} onClick={() => setZoom((z) => Math.min(160, z + 10))}>
                 <ZoomIn className="h-4 w-4" />
               </ToolbarBtn>
@@ -293,20 +369,51 @@ export function ReaderShell({
           </div>
 
           {/* Mock page renderer — real rendered content (not an iframe, not a screenshot). */}
-          <div className="flex flex-1 justify-center overflow-auto rounded-3xl border border-forest/10 bg-cream/40 p-4 scrollbar-soft">
+          <div className="relative flex flex-1 justify-center overflow-auto rounded-3xl border border-forest/10 bg-cream/40 p-4 scrollbar-soft">
             <div
               style={{ width: `${zoom}%`, maxWidth: 720 }}
-              className="rounded-2xl bg-white p-8 shadow-card md:p-12"
+              className="relative rounded-2xl bg-white p-8 shadow-card md:p-12"
             >
+              {/* Maquette: botanical motif along the LEFT edge of the viewer
+                  page. Positioned just inside the page so it's clearly
+                  visible in the left gutter between the page edge and the
+                  article content. Sits BEHIND the article (DOM order + the
+                  article's relative stacking context), so only the portion in
+                  the gutter renders — but that's the maquette look. */}
+              <Leaf
+                className="pointer-events-none absolute left-0 top-8 hidden h-[65%] w-12 text-forest/30 md:block [transform:rotate(-10deg)]"
+                aria-hidden
+              />
               {current ? (
-                <article className="flex flex-col gap-5">
+                <article className="relative flex flex-col gap-5">
                   <header className="flex items-center justify-between border-b border-forest/10 pb-4">
-                    <span className="eyebrow">
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
+                      {program.kind === 'programa' ? 'Programa Corpo Forte' : 'Guia Força na Caneta'}
+                    </span>
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-forest-2">
                       {unit} {mod.week.n}
                     </span>
-                    <span className="text-xs text-muted">{mod.week.focus}</span>
                   </header>
-                  <h2 className="font-display text-3xl font-medium text-ink">{mod.week.title}</h2>
+                  {/* Maquette: large serif "0N" header + serif title. */}
+                  <div className="flex items-start gap-5">
+                    <span className="font-display text-[clamp(3rem,5vw,4.5rem)] font-medium leading-none text-forest/80">
+                      {String(mod.week.n).padStart(2, '0')}
+                    </span>
+                    <div className="pt-2">
+                      <h2 className="font-display text-3xl font-medium leading-tight text-ink md:text-4xl">
+                        {mod.week.title}
+                      </h2>
+                      <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-gold">
+                        {mod.week.focus}
+                      </p>
+                    </div>
+                  </div>
+                  {/* Maquette: uppercase premium subheader — generic, no clinical claims. */}
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-muted">
+                    {program.kind === 'programa'
+                      ? 'Mais força para uma vida mais plena'
+                      : 'Pequenas escolhas. Grandes mudanças.'}
+                  </p>
                   {current.paragraphs.map((p, i) => (
                     <p key={i} className="text-[15px] leading-relaxed text-ink/85">
                       {p}
@@ -323,11 +430,17 @@ export function ReaderShell({
                   <footer className="mt-2 flex items-center justify-between border-t border-forest/10 pt-3 text-xs text-muted">
                     <span>{asset?.title ?? program.name}</span>
                     <span>
-                      {mod.week.pageStart + pageIdx} / {totalPages}
+                      {absolutePage} / {totalPages}
                     </span>
                   </footer>
                 </article>
               ) : null}
+            </div>
+            {/* Maquette: circular gold ValueBadge overlapping bottom-right of the viewer. */}
+            <div className="pointer-events-none absolute -bottom-3 right-6 z-10 hidden md:block">
+              <ValueBadge size="sm" eyebrow="Mais energia">
+                Mais constância.
+              </ValueBadge>
             </div>
           </div>
         </div>
@@ -335,31 +448,75 @@ export function ReaderShell({
         {/* Right rail — branched by program slug per spec */}
         <aside className="hidden lg:block">
           <div className="sticky top-24 flex flex-col gap-4">
+            {/* Maquette: "O seu progresso" header + week-N-of-N + pages read + % + "Continuar leitura" CTA. */}
             <div className="rounded-3xl border border-forest/10 bg-white p-5">
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted">Progresso</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted">O seu progresso</p>
+              <p className="mt-2 font-display text-base font-medium text-ink">
+                {unit} {mod.week.n} de {totalUnits}
+              </p>
+              <p className="mt-1 text-xs text-muted">
+                {pageIdx + 1} de {pages.length} {program.slug === 'corpo-forte' ? 'páginas lidas' : 'páginas lidas'}
+              </p>
               <div className="mt-3 h-2 overflow-hidden rounded-full bg-forest/10">
                 <div className="h-full bg-gradient-gold" style={{ width: `${progress}%` }} />
               </div>
-              <p className="mt-2 text-xs text-muted">
-                {progress}% da {program.slug === 'corpo-forte' ? 'semana' : 'leitura do dia'}
-              </p>
+              <p className="mt-2 text-xs text-muted">{progress}%</p>
+              {/* Maquette: primary "Continuar leitura →" button (advances the page). */}
+              <button
+                type="button"
+                onClick={() => setPageIdx((i) => Math.min(pages.length - 1, i + 1))}
+                disabled={pageIdx >= pages.length - 1}
+                className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-forest px-4 text-sm font-semibold text-white transition-colors hover:bg-forest-2 disabled:opacity-50"
+              >
+                Continuar leitura
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setBookmarked((b) => !b)}
+                className="mt-2 inline-flex h-10 w-full items-center justify-center gap-2 rounded-full border border-forest/15 px-4 text-xs font-semibold text-forest transition-colors hover:bg-forest/5"
+              >
+                <Bookmark className={cn('h-3.5 w-3.5', bookmarked && 'fill-gold text-gold')} />
+                Guardar página
+              </button>
             </div>
 
             {program.slug === 'corpo-forte' ? (
               <>
-                {/* Week summary */}
+                {/* Maquette: interactive accordion 1-4 with chevrons. */}
                 <div className="rounded-3xl border border-forest/10 bg-white p-5">
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted">
-                    Resumo da semana
+                    Resumo da {unit} {mod.week.n}
                   </p>
-                  <p className="mt-2 font-display text-lg font-medium text-ink">{mod.week.title}</p>
-                  <p className="mt-1 text-sm text-muted">{mod.week.summary}</p>
-                  <p className="mt-3 text-xs text-muted">
-                    <span className="font-semibold text-forest">Foco:</span> {mod.week.focus}
-                  </p>
-                  <p className="mt-1 text-xs text-muted">
-                    <span className="font-semibold text-forest">Experimento:</span> {mod.week.experiment}
-                  </p>
+                  <ul className="mt-3 flex flex-col">
+                    {summaryItems.map((item) => {
+                      const open = openSummary === item.n;
+                      return (
+                        <li key={item.n} className="border-b border-forest/10 last:border-b-0">
+                          <button
+                            type="button"
+                            onClick={() => setOpenSummary(open ? -1 : item.n)}
+                            aria-expanded={open}
+                            className="flex w-full items-center gap-2.5 py-2.5 text-left"
+                          >
+                            <span className="inline-grid h-5 w-5 shrink-0 place-items-center rounded-full bg-forest/10 text-[11px] font-bold text-forest">
+                              {item.n}
+                            </span>
+                            <span className="flex-1 text-sm font-medium text-ink">{item.title}</span>
+                            <ChevronDown
+                              className={cn(
+                                'h-4 w-4 text-muted transition-transform',
+                                open ? 'rotate-180' : 'rotate-0',
+                              )}
+                            />
+                          </button>
+                          {open ? (
+                            <p className="pb-3 pl-7 text-sm leading-relaxed text-muted">{item.body}</p>
+                          ) : null}
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </div>
 
                 {/* Workbook CTA */}
@@ -532,7 +689,7 @@ export function ReaderShell({
             <ChevronLeft className="h-4 w-4" />
           </ToolbarBtn>
           <span className="text-xs text-muted">
-            {mod.week.pageStart + pageIdx} / {totalPages}
+            {absolutePage} / {totalPages}
           </span>
           <ToolbarBtn
             label={copy.common.next}

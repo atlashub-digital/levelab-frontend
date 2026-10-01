@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react';
 import {
-  ArrowDownUp,
   ArrowRight,
   Check,
   ChevronDown,
@@ -14,6 +13,9 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Card';
 import { ProductCard } from '@/components/blocks/ProductCard';
+import { ValueBadge } from '@/components/blocks/ValueBadge';
+import { OliveBranch } from '@/components/blocks/OliveBranch';
+import { ScriptAccent } from '@/components/ui/ScriptAccent';
 import {
   products as allProducts,
   productCategories,
@@ -23,13 +25,13 @@ import {
 } from '@/lib/content/store';
 import type { Locale } from '@/lib/i18n';
 
-type SortKey = 'recomendados' | 'novidades' | 'a-z' | 'z-a';
+type SortKey = 'recomendados' | 'preco-asc' | 'preco-desc' | 'novidades';
 
 const sortOptions: { key: SortKey; label: string }[] = [
-  { key: 'recomendados', label: 'Recomendados' },
+  { key: 'recomendados', label: 'Mais relevantes' },
+  { key: 'preco-asc', label: 'Preço ↑' },
+  { key: 'preco-desc', label: 'Preço ↓' },
   { key: 'novidades', label: 'Novidades' },
-  { key: 'a-z', label: 'A → Z' },
-  { key: 'z-a', label: 'Z → A' },
 ];
 
 const ALL_CATEGORIES: ProductCategory[] = [
@@ -43,20 +45,136 @@ const ALL_CATEGORIES: ProductCategory[] = [
 ];
 
 /**
- * LeveLab premium shop catalog.
- *
- * V1 commerce phase (spec pages.store.commerce_phase):
- *   "catalogue_ready_checkout_later" + price_rule = "Do not hard-code the Euro
- *   prices visible in the visual mockup." Prices are intentionally NOT shown —
- *   the ProductCard renders no price block at all (see ProductCard.tsx).
- *
- * Filters (Categoria/Formato) are functional. Objetivo + Preço are present
- * as visual mock filters (no effect on the list) because there are no prices
- * in the catalog yet. The price filter is hidden when showPrices is false
- * (it has nothing to filter on).
+ * Maquette-style accordion filter group. Each group is collapsible
+ * (chevron toggle, single-open is the visual pattern in the maquette —
+ * we allow any combination). Counts in parentheses per spec
+ * ("Programas (5)"). Built with native button + state for accessibility.
  */
+function FilterAccordion({
+  title,
+  count,
+  defaultOpen = true,
+  children,
+}: {
+  title: string;
+  count?: number;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="border-b border-forest/10 last:border-b-0">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-2 py-3 text-left"
+      >
+        <span className="text-sm font-semibold text-ink">
+          {title}
+          {count != null ? (
+            <span className="ml-1 text-xs font-normal text-muted">({count})</span>
+          ) : null}
+        </span>
+        <ChevronDown
+          className={cn(
+            'h-4 w-4 text-muted transition-transform',
+            open ? 'rotate-180' : 'rotate-0',
+          )}
+        />
+      </button>
+      {open ? <div className="pb-4">{children}</div> : null}
+    </div>
+  );
+}
+
+/** Square checkbox option with maquette-style clean look. */
+function CheckboxOption({
+  label,
+  count,
+  checked,
+  onToggle,
+}: {
+  label: string;
+  count?: number;
+  checked: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <label className="flex cursor-pointer items-center gap-3 rounded-lg px-1.5 py-1.5 text-sm text-ink transition-colors hover:bg-forest/5">
+      <span
+        className={cn(
+          'inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] border transition-colors',
+          checked
+            ? 'border-forest bg-forest text-white'
+            : 'border-forest/30 bg-white text-transparent',
+        )}
+      >
+        <Check className="h-3 w-3" />
+      </span>
+      <input
+        type="checkbox"
+        className="sr-only"
+        checked={checked}
+        onChange={onToggle}
+      />
+      <span className="flex-1">{label}</span>
+      {count != null ? <span className="text-xs text-muted">{count}</span> : null}
+    </label>
+  );
+}
+
+/**
+ * Mock price range slider — visual element only. Maquette shows a range
+ * slider with two handles. Spec: prices are intentionally undefined in V1
+ * (catalogue_ready_checkout_later + price_rule "Do not hard-code the Euro
+ * prices"). The slider is a placeholder until the catalog provider returns
+ * prices; selecting a range does NOT filter the list. Documented in copy.
+ */
+function PriceRangeSlider() {
+  const [range, setRange] = useState<[number, number]>([0, 100]);
+  const min = 0;
+  const max = 100;
+  const pctLeft = ((range[0] - min) / (max - min)) * 100;
+  const pctRight = ((range[1] - min) / (max - min)) * 100;
+  return (
+    <div className="pt-2">
+      <div className="relative h-2 rounded-full bg-forest/10">
+        <div
+          className="absolute h-full rounded-full bg-gradient-gold"
+          style={{ left: `${pctLeft}%`, right: `${100 - pctRight}%` }}
+        />
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={range[0]}
+          onChange={(e) => setRange(([_, hi]) => [Math.min(Number(e.target.value), hi), hi])}
+          aria-label="Preço mínimo"
+          className="pointer-events-auto absolute inset-0 h-2 w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-forest [&::-webkit-slider-thumb]:bg-white"
+        />
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={range[1]}
+          onChange={(e) => setRange(([lo]) => [lo, Math.max(Number(e.target.value), lo)])}
+          aria-label="Preço máximo"
+          className="pointer-events-auto absolute inset-0 h-2 w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-forest [&::-webkit-slider-thumb]:bg-white"
+        />
+      </div>
+      <div className="mt-3 flex items-center justify-between text-[11px] text-muted">
+        <span>€{range[0]}</span>
+        <span>€{range[1]}</span>
+      </div>
+      <p className="mt-2 text-[11px] italic text-muted">
+        Filtro visual — preços serão divulgados quando a LeveLab Store abrir.
+      </p>
+    </div>
+  );
+}
+
 export function ShopCatalog({ locale }: { locale: Locale }) {
-  // State — category multi-select, format multi-select, objective mock, sort.
   const [selectedCats, setSelectedCats] = useState<Set<ProductCategory>>(
     () => new Set(ALL_CATEGORIES),
   );
@@ -66,45 +184,35 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
   const [selectedObjectives, setSelectedObjectives] = useState<Set<string>>(
     () => new Set(),
   );
-  const [selectedPriceBand, setSelectedPriceBand] = useState<string>('any');
   const [sort, setSort] = useState<SortKey>('recomendados');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  // Distinct formats in the catalog (for the format checkboxes).
+  // Distinct formats in the catalog (with counts).
   const formatOptions = useMemo(() => {
-    const seen = new Map<string, string>();
+    const seen = new Map<string, number>();
     for (const p of allProducts) {
-      if (!seen.has(p.format)) {
-        seen.set(p.format, p.format);
-      }
+      seen.set(p.format, (seen.get(p.format) ?? 0) + 1);
     }
-    return Array.from(seen.values());
+    return Array.from(seen.entries()).map(([label, count]) => ({ label, count }));
   }, []);
 
-  // Objective options — visual/mock multi-select. Does NOT filter the list
-  // (no product has an "objective" field in V1). When the catalog provider
-  // is upgraded to a backend with objective tags, this filter becomes live
-  // without touching the component surface.
-  const objectiveOptions: { id: string; label: string }[] = [
-    { id: 'rotina', label: 'Rotina' },
-    { id: 'alimentacao', label: 'Alimentação geral' },
-    { id: 'movimento', label: 'Movimento' },
-    { id: 'sono', label: 'Sono e recuperação' },
-    { id: 'habitos', label: 'Hábitos' },
-    { id: 'constancia', label: 'Constância' },
-  ];
+  // Category counts (mock — count by category in the static catalog).
+  const categoryCounts = useMemo(() => {
+    const counts = new Map<ProductCategory, number>();
+    for (const p of allProducts) {
+      counts.set(p.category, (counts.get(p.category) ?? 0) + 1);
+    }
+    return counts;
+  }, []);
 
-  // Price band options — visual/mock radio. Spec: pages.store.filters lists
-  // Preço as a filter and explicitly allows it to be visual/mock. Prices are
-  // NOT in the catalog yet (V1 commerce_phase = catalogue_ready_checkout_later,
-  // price_rule = "Do not hard-code the Euro prices"). The radio is present so
-  // the future price filter has a fixed surface; selecting a band does NOT
-  // filter anything until the catalog provider returns prices.
-  const priceBandOptions: { id: string; label: string }[] = [
-    { id: 'any', label: 'Qualquer preço' },
-    { id: 'baixo', label: 'Até €50' },
-    { id: 'medio', label: '€50 – €150' },
-    { id: 'alto', label: '€150 +' },
+  // Objective options — visual/mock multi-select. Spec (Task D brief):
+  //   "Mais energia", "Força e movimento", "Rotina", "Sono".
+  // Does NOT filter the list (no product has an "objective" field in V1).
+  const objectiveOptions: { id: string; label: string }[] = [
+    { id: 'mais-energia', label: 'Mais energia' },
+    { id: 'forca-movimento', label: 'Força e movimento' },
+    { id: 'rotina', label: 'Rotina' },
+    { id: 'sono', label: 'Sono' },
   ];
 
   const filtered = useMemo(() => {
@@ -114,14 +222,15 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
     }
     const sorted = [...list];
     switch (sort) {
-      case 'a-z':
+      case 'preco-asc':
+        // No prices in V1 — fall back to alphabetical ascending (mock).
         sorted.sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'));
         break;
-      case 'z-a':
+      case 'preco-desc':
+        // No prices in V1 — fall back to alphabetical descending (mock).
         sorted.sort((a, b) => b.title.localeCompare(a.title, 'pt-BR'));
         break;
       case 'novidades':
-        // "Novo" badge first, then live before soon, then default order.
         sorted.sort((a, b) => {
           const an = a.badge === 'Novo' ? 0 : 1;
           const bn = b.badge === 'Novo' ? 0 : 1;
@@ -133,7 +242,6 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
         break;
       case 'recomendados':
       default:
-        // Default catalog order — keep as-is.
         break;
     }
     return sorted;
@@ -144,7 +252,6 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
       const next = new Set(prev);
       if (next.has(cat)) next.delete(cat);
       else next.add(cat);
-      // Never allow zero categories — fall back to "all" if user unchecks the last one.
       if (next.size === 0) return new Set(ALL_CATEGORIES);
       return next;
     });
@@ -180,7 +287,6 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
     setSelectedCats(new Set(ALL_CATEGORIES));
     setSelectedFormats(new Set());
     setSelectedObjectives(new Set());
-    setSelectedPriceBand('any');
     setSort('recomendados');
   }
 
@@ -194,156 +300,90 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
   const activeFiltersCount =
     (selectedCats.size !== ALL_CATEGORIES.length ? 1 : 0) +
     selectedFormats.size +
-    selectedObjectives.size +
-    (selectedPriceBand !== 'any' ? 1 : 0);
+    selectedObjectives.size;
 
   const filtersPanel = (
-    <div className="flex flex-col gap-7">
-      <FilterGroup title="Categoria">
-        <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col">
+      {/* Maquette: "Filtrar por" header with funnel icon + "Limpar filtros" link. */}
+      <div className="flex items-center justify-between gap-2 pb-4">
+        <span className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-forest-2">
+          <SlidersHorizontal className="h-4 w-4" />
+          Filtrar por
+        </span>
+        <button
+          type="button"
+          onClick={clearFilters}
+          className="text-[11px] font-semibold uppercase tracking-wider text-gold transition-colors hover:text-forest"
+        >
+          Limpar filtros
+        </button>
+      </div>
+
+      <FilterAccordion
+        title="Categoria"
+        count={productCategories.filter((c) => c.id !== 'todos').length}
+      >
+        <div className="flex flex-col gap-1">
           {productCategories
             .filter((c) => c.id !== 'todos')
             .map((c) => {
               const id = c.id as ProductCategory;
               const checked = selectedCats.has(id);
               return (
-                <label
+                <CheckboxOption
                   key={c.id}
-                  className="flex cursor-pointer items-center gap-3 rounded-xl px-2 py-1.5 text-sm text-ink transition-colors hover:bg-forest/5"
-                >
-                  <span
-                    className={cn(
-                      'inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] border transition-colors',
-                      checked
-                        ? 'border-forest bg-forest text-white'
-                        : 'border-forest/30 bg-white text-transparent',
-                    )}
-                  >
-                    <Check className="h-3 w-3" />
-                  </span>
-                  <input
-                    type="checkbox"
-                    className="sr-only"
-                    checked={checked}
-                    onChange={() => toggleCategory(id)}
-                  />
-                  <span>{c.label}</span>
-                </label>
+                  label={c.label}
+                  count={categoryCounts.get(id) ?? 0}
+                  checked={checked}
+                  onToggle={() => toggleCategory(id)}
+                />
               );
             })}
         </div>
-      </FilterGroup>
+      </FilterAccordion>
 
-      <FilterGroup title="Objetivo">
-        <div className="flex flex-col gap-1.5">
+      <FilterAccordion title="Objetivo" count={objectiveOptions.length}>
+        <div className="flex flex-col gap-1">
           {objectiveOptions.map((o) => {
             const checked = selectedObjectives.has(o.id);
             return (
-              <label
+              <CheckboxOption
                 key={o.id}
-                className="flex cursor-pointer items-center gap-3 rounded-xl px-2 py-1.5 text-sm text-ink transition-colors hover:bg-forest/5"
-              >
-                <span
-                  className={cn(
-                    'inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] border transition-colors',
-                    checked
-                      ? 'border-forest bg-forest text-white'
-                      : 'border-forest/30 bg-white text-transparent',
-                  )}
-                >
-                  <Check className="h-3 w-3" />
-                </span>
-                <input
-                  type="checkbox"
-                  className="sr-only"
-                  checked={checked}
-                  onChange={() => toggleObjective(o.id)}
-                />
-                <span>{o.label}</span>
-              </label>
+                label={o.label}
+                checked={checked}
+                onToggle={() => toggleObjective(o.id)}
+              />
             );
           })}
         </div>
-        <p className="mt-1.5 text-[11px] italic text-muted">
+        <p className="mt-2 text-[11px] italic text-muted">
           Filtro visual — será ligado ao catálogo backend em breve.
         </p>
-      </FilterGroup>
+      </FilterAccordion>
 
-      <FilterGroup title="Formato">
-        <div className="flex flex-col gap-1.5">
-          {formatOptions.map((f) => {
-            const checked = selectedFormats.has(f);
-            return (
-              <label
-                key={f}
-                className="flex cursor-pointer items-center gap-3 rounded-xl px-2 py-1.5 text-sm text-ink transition-colors hover:bg-forest/5"
-              >
-                <span
-                  className={cn(
-                    'inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] border transition-colors',
-                    checked
-                      ? 'border-forest bg-forest text-white'
-                      : 'border-forest/30 bg-white text-transparent',
-                  )}
-                >
-                  <Check className="h-3 w-3" />
-                </span>
-                <input
-                  type="checkbox"
-                  className="sr-only"
-                  checked={checked}
-                  onChange={() => toggleFormat(f)}
-                />
-                <span>{f}</span>
-              </label>
-            );
-          })}
-        </div>
-      </FilterGroup>
-
-      <FilterGroup title="Preço">
-        <div className="flex flex-col gap-1.5">
-          {priceBandOptions.map((o) => {
-            const checked = selectedPriceBand === o.id;
-            return (
-              <label
-                key={o.id}
-                className="flex cursor-pointer items-center gap-3 rounded-xl px-2 py-1.5 text-sm text-ink transition-colors hover:bg-forest/5"
-              >
-                <span
-                  className={cn(
-                    'inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-colors',
-                    checked
-                      ? 'border-forest bg-forest text-white'
-                      : 'border-forest/30 bg-white text-transparent',
-                  )}
-                >
-                  {checked ? <span className="h-1.5 w-1.5 rounded-full bg-white" /> : null}
-                </span>
-                <input
-                  type="radio"
-                  name="price-band"
-                  className="sr-only"
-                  checked={checked}
-                  onChange={() => setSelectedPriceBand(o.id)}
-                />
-                <span>{o.label}</span>
-              </label>
-            );
-          })}
-        </div>
-        <p className="mt-1.5 text-[11px] italic text-muted">
-          Filtro visual — preços serão divulgados quando a LeveLab Store abrir.
-        </p>
-      </FilterGroup>
-
-      <button
-        type="button"
-        onClick={clearFilters}
-        className="self-start text-xs font-semibold uppercase tracking-wider text-forest-2 transition-colors hover:text-forest"
+      <FilterAccordion
+        title="Formato"
+        count={formatOptions.length}
       >
-        Limpar filtros
-      </button>
+        <div className="flex flex-col gap-1">
+          {formatOptions.map((f) => {
+            const checked = selectedFormats.has(f.label);
+            return (
+              <CheckboxOption
+                key={f.label}
+                label={f.label}
+                count={f.count}
+                checked={checked}
+                onToggle={() => toggleFormat(f.label)}
+              />
+            );
+          })}
+        </div>
+      </FilterAccordion>
+
+      <FilterAccordion title="Preço">
+        <PriceRangeSlider />
+      </FilterAccordion>
     </div>
   );
 
@@ -374,10 +414,21 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      {/* Featured bundle banner */}
+      {/* Featured bundle banner — maquette motif: circular gold ValueBadge
+          (-20%) on the right + OliveBranch motifs in corners + script accent. */}
       <section className="py-12 md:py-16">
         <div className="shell">
           <div className="relative overflow-hidden rounded-[2.5rem] border border-forest/10 bg-gradient-forest p-6 text-ivory shadow-card md:p-12">
+            <OliveBranch
+              orientation="left"
+              thin
+              className="pointer-events-none absolute -left-2 -top-2 h-40 w-40 text-gold/60"
+            />
+            <OliveBranch
+              orientation="right"
+              thin
+              className="pointer-events-none absolute -right-2 bottom-0 h-44 w-44 text-gold/60"
+            />
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0 opacity-[0.12] [background:radial-gradient(rgba(255,255,255,0.4)_1px,transparent_1px)] [background-size:20px_20px]"
@@ -404,29 +455,42 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
                     </li>
                   ))}
                 </ul>
+                {/* Maquette: script accent inside the bundle. */}
+                <div className="mt-6">
+                  <ScriptAccent className="text-ivory/90" rotate={-2}>
+                    Mais que conteúdos. Uma jornada completa.
+                  </ScriptAccent>
+                </div>
               </div>
-              <div className="rounded-3xl border border-ivory/15 bg-ivory/5 p-6 backdrop-blur">
-                <span className="inline-flex items-center gap-1 rounded-full bg-gradient-gold px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-ink">
-                  {featuredBundle.discountLabel}
-                </span>
-                <p className="mt-4 font-display text-xl font-medium text-ivory">
+              <div className="relative rounded-3xl border border-ivory/15 bg-ivory/5 p-6 backdrop-blur">
+                {/* Maquette: circular gold ValueBadge (-20%) on the right. */}
+                <div className="absolute -right-3 -top-6 z-10">
+                  <ValueBadge size="md" eyebrow="20% no bundle">
+                    Poupa já
+                  </ValueBadge>
+                </div>
+                <p className="font-display text-xl font-medium text-ivory">
                   Bundle essencial
                 </p>
                 <p className="mt-1 text-sm text-ivory/70">
                   Programa + Workbook + Conteúdos.
                 </p>
+                <p className="mt-3 text-[11px] uppercase tracking-wider text-gold-soft">
+                  Compra futura via LeveLab Store
+                </p>
                 <div className="mt-6">
+                  {/* Maquette: solid dark green block button "Ver detalhes". */}
                   <Button
                     href={`/${locale}${featuredBundle.path}`}
-                    variant="gold"
-                    className="w-full"
+                    variant="primary"
+                    className="w-full bg-forest-3 hover:bg-forest"
                   >
-                    Ver pacote
+                    Ver detalhes
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
                 <p className="mt-3 text-[11px] text-ivory/60">
-                  Compra futura via LeveLab Store (em breve).
+                  Checkout chega em breve com a LeveLab Store oficial.
                 </p>
               </div>
             </div>
@@ -434,7 +498,7 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      {/* Category pills */}
+      {/* Category pills (preserved for quick category jumping) */}
       <section className="border-t border-forest/10 bg-cream/40">
         <div className="shell py-6">
           <div className="flex flex-wrap items-center gap-2">
@@ -444,7 +508,7 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
                 <button
                   key={c.id}
                   type="button"
-                  onClick={() => selectPreset(c.id)}
+                  onClick={() => selectPreset(c.id as ProductCategory | 'todos')}
                   className={cn(
                     'inline-flex h-9 items-center rounded-full border px-4 text-sm font-medium transition-colors',
                     isActive
@@ -466,10 +530,6 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
           {/* Sidebar (desktop) */}
           <aside className="hidden lg:block">
             <div className="sticky top-24 rounded-3xl border border-forest/10 bg-white p-6 shadow-soft">
-              <div className="mb-5 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-forest-2">
-                <SlidersHorizontal className="h-4 w-4" />
-                Filtrar
-              </div>
               {filtersPanel}
             </div>
           </aside>
@@ -493,13 +553,16 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
 
           {/* Grid + sort bar */}
           <div>
+            {/* Maquette: results bar with count + "Ordenar por:" dropdown. */}
             <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
               <p className="text-sm text-muted">
                 <span className="font-semibold text-ink">{filtered.length}</span>{' '}
-                {filtered.length === 1 ? 'conteúdo' : 'conteúdos'}
+                {filtered.length === 1 ? 'conteúdo encontrado' : 'conteúdos encontrados'}
               </p>
               <div className="flex items-center gap-2">
-                <ArrowDownUp className="h-4 w-4 text-muted" />
+                <span className="text-xs font-medium uppercase tracking-wider text-muted">
+                  Ordenar por:
+                </span>
                 <div className="relative">
                   <select
                     value={sort}
@@ -533,7 +596,7 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
                 </button>
               </div>
             ) : (
-              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                 {filtered.map((p) => (
                   <ProductCard key={p.id} product={p} locale={locale} />
                 ))}
@@ -585,23 +648,6 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
   );
 }
 
-function FilterGroup({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">
-        {title}
-      </p>
-      {children}
-    </div>
-  );
-}
-
 function SortLegend() {
   return (
     <div className="mt-10 flex flex-wrap items-center gap-4 rounded-2xl border border-forest/10 bg-cream/50 px-5 py-4 text-[11px] text-muted">
@@ -613,7 +659,9 @@ function SortLegend() {
       <span>·</span>
       <span>Novidades = lançamentos e badges "Novo" primeiro</span>
       <span>·</span>
-      <span>Preços serão divulgados quando a LeveLab Store abrir.</span>
+      <span>
+        Ordenação por preço é visual enquanto os preços não são confirmados.
+      </span>
     </div>
   );
 }

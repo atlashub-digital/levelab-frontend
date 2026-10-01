@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import { Mail, Phone, MessageCircle } from 'lucide-react';
+import { Mail, Phone, MessageCircle, Heart, Sun, Flower2 } from 'lucide-react';
 import { siteConfig } from '@/config/site';
 import { legalConfig } from '@/config/legal';
 import { locales, type LocaleCopy } from '@/lib/i18n';
 import { whatsappUrl } from '@/lib/utils';
+import { OliveBranch } from '@/components/blocks/OliveBranch';
 
 export function SiteFooter({ locale, copy }: { locale: string; copy: LocaleCopy }) {
   const year = new Date().getFullYear();
@@ -27,10 +28,34 @@ export function SiteFooter({ locale, copy }: { locale: string; copy: LocaleCopy 
     { label: copy.footer.accessibility, href: `/${locale}/acessibilidade` },
   ];
 
+  /**
+   * Maquette motif: a row of 3 decorative icon-links ABOVE the copyright
+   * line — subtle outline circles representing the brand values.
+   *   Heart → "Conhecimento"
+   *   Flower2 (lotus) → "Equilíbrio"
+   *   Sun → "Vida"
+   */
+  const valueIconLinks = [
+    { icon: Heart, label: 'Conhecimento' },
+    { icon: Flower2, label: 'Equilíbrio' },
+    { icon: Sun, label: 'Vida' },
+  ];
+
   return (
     <footer className="mt-auto border-t border-forest/10 bg-forest text-ivory/90">
-      <div className="bg-paper-grain">
-        <div className="shell grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div className="relative bg-paper-grain">
+        {/* Subtle olive branch motifs at the corners of the footer top. */}
+        <OliveBranch
+          orientation="left"
+          thin
+          className="pointer-events-none absolute -left-2 -top-2 h-32 w-32 text-gold/40"
+        />
+        <OliveBranch
+          orientation="right"
+          thin
+          className="pointer-events-none absolute -right-2 -top-2 h-32 w-32 text-gold/40"
+        />
+        <div className="shell relative grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <svg viewBox="0 0 56 56" className="h-10 w-10" aria-hidden>
@@ -142,8 +167,22 @@ export function SiteFooter({ locale, copy }: { locale: string; copy: LocaleCopy 
       </div>
 
       <div className="border-t border-ivory/10">
-        <div className="shell flex flex-col items-center justify-between gap-4 py-6 text-center md:flex-row md:text-left">
+        <div className="shell flex flex-col items-center justify-between gap-6 py-6 text-center md:flex-row md:text-left">
           <p className="font-display text-lg italic text-ivory/90">{siteConfig.closingLine}</p>
+          {/* Maquette motif: 3 decorative outline icon-links (Conhecimento /
+              Equilíbrio / Vida) sit ABOVE the copyright line. */}
+          <ul className="flex items-center gap-6" aria-label="Valores LeveLab">
+            {valueIconLinks.map((v) => (
+              <li key={v.label}>
+                <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-ivory/70">
+                  <span className="inline-grid h-8 w-8 place-items-center rounded-full border border-ivory/25 text-gold-soft">
+                    <v.icon className="h-3.5 w-3.5" strokeWidth={1.5} />
+                  </span>
+                  {v.label}
+                </span>
+              </li>
+            ))}
+          </ul>
           <p className="text-xs text-ivory/50">
             © {year} {siteConfig.name}. {copy.footer.rights} · {copy.footer.group}
           </p>

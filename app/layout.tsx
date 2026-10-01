@@ -1,6 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Fraunces, Inter } from 'next/font/google';
+import { Fraunces, Inter, Caveat } from 'next/font/google';
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -15,6 +15,19 @@ const inter = Inter({
   variable: '--font-inter',
   display: 'swap',
   weight: ['300', '400', '500', '600', '700'],
+});
+
+/**
+ * Caveat — handwritten/script accent font. Used SPARINGLY via the
+ * <ScriptAccent> component for short microcopy (gold ink on cream).
+ * Never for long body copy. Loaded via next/font/google (no extra network
+ * hop on the client after build).
+ */
+const caveat = Caveat({
+  subsets: ['latin'],
+  variable: '--font-caveat',
+  display: 'swap',
+  weight: ['400', '500', '600', '700'],
 });
 
 export const metadata: Metadata = {
@@ -57,7 +70,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className={`${fraunces.variable} ${inter.variable}`}>
+    <html lang="pt-BR" className={`${fraunces.variable} ${inter.variable} ${caveat.variable}`}>
       <body>{children}</body>
     </html>
   );
