@@ -1,0 +1,226 @@
+/**
+ * LeveLab brand content: ecosystem, method, trust strip, how it works,
+ * testimonials (reserved slots — never invented), FAQ, LIA capabilities,
+ * quick actions and mock chat, Ana Gomes info.
+ *
+ * Guardrails (from docs/ZAI_WEB_BUILD_PROMPT.md):
+ * - Do not invent testimonials → reserved slots only.
+ * - Do not make clinical/weight-loss claims.
+ * - LIA must always be identified as an AI assistant.
+ */
+
+export type EcosystemItem = {
+  id: string;
+  name: string;
+  kind: 'care' | 'lia' | 'program' | 'academy' | 'club' | 'store';
+  tagline: string;
+  description: string;
+  /** locale-relative path */
+  path: string;
+  status: 'live' | 'soon';
+};
+
+export const ecosystem: EcosystemItem[] = [
+  {
+    id: 'care',
+    name: 'LeveLab Care',
+    kind: 'care',
+    tagline: 'Acompanhamento humano',
+    description: 'Suporte humano e comercial — da dúvida à continuidade.',
+    path: '/sobre#care',
+    status: 'live',
+  },
+  {
+    id: 'lia',
+    name: 'LIA',
+    kind: 'lia',
+    tagline: 'Assistente de bem-estar',
+    description: 'Conversas práticas sobre rotina, alimentação, movimento e hábitos.',
+    path: '/lia',
+    status: 'live',
+  },
+  {
+    id: 'corpo-forte',
+    name: 'Corpo Forte',
+    kind: 'program',
+    tagline: 'Programa de 8 semanas',
+    description: 'Aprendizado, aplicação e progresso em oito semanas estruturadas.',
+    path: '/programas/corpo-forte',
+    status: 'live',
+  },
+  {
+    id: 'forca-na-caneta',
+    name: 'Força na Caneta',
+    kind: 'program',
+    tagline: 'Guia de 7 dias',
+    description: 'Guia educativo prático sobre apetite e organização das refeições.',
+    path: '/programas/forca-na-caneta',
+    status: 'live',
+  },
+  {
+    id: 'academy',
+    name: 'LeveLab Academy',
+    kind: 'academy',
+    tagline: 'Conteúdo educativo',
+    description: 'Editorial e futuro catálogo de aprendizagem.',
+    path: '/conteudos',
+    status: 'soon',
+  },
+  {
+    id: 'club',
+    name: 'LeveLab Club',
+    kind: 'club',
+    tagline: 'Comunidade',
+    description: 'Comunidade e continuidade entre participantes (em breve).',
+    path: '/conteudos',
+    status: 'soon',
+  },
+];
+
+export type TrustItem = { id: string; label: string; description: string };
+
+export const trustStrip: TrustItem[] = [
+  { id: 'acompanhamento', label: 'Acompanhamento', description: 'Método e presença ao longo do tempo.' },
+  { id: 'conteudo', label: 'Conteúdo educativo', description: 'Aprendizado claro, calmo e prático.' },
+  { id: 'ia-humano', label: 'IA + apoio humano', description: 'LIA e pessoas do lado de cá.' },
+  { id: 'privacidade', label: 'Privacidade', description: 'Cuidado com os seus dados.' },
+  { id: 'rotina', label: 'Rotina real', description: 'Para a vida real, não para o ideal.' },
+];
+
+export type HowStep = { n: number; title: string; description: string };
+
+export const howItWorks: HowStep[] = [
+  { n: 1, title: 'Avaliação', description: 'Uma conversa curta para entender o seu momento.' },
+  { n: 2, title: 'LIA', description: 'Conversas práticas sobre rotina e bem-estar.' },
+  { n: 3, title: 'Programa', description: 'Aprendizado estruturado em semanas ou dias.' },
+  { n: 4, title: 'Progresso', description: 'Microaulas, leitura, exercícios e check-ins.' },
+  { n: 5, title: 'Apoio humano', description: 'Ana e a equipa para tirar dúvidas e continuar.' },
+  { n: 6, title: 'Continuidade', description: 'Um plano que segue depois do programa.' },
+];
+
+export type MethodPrinciple = { id: string; title: string; description: string };
+
+export const methodPrinciples: MethodPrinciple[] = [
+  {
+    id: 'leve',
+    title: 'Leve',
+    description: 'Sem extremismos. Pequenos hábitos que cabem na vida real.',
+  },
+  {
+    id: 'metodo',
+    title: 'Com método',
+    description: 'Estrutura, aprendizado e progresso — não improviso.',
+  },
+  {
+    id: 'acompanhado',
+    title: 'Acompanhado',
+    description: 'LIA e apoio humano para não fazer tudo sozinho.',
+  },
+  {
+    id: 'humano',
+    title: 'Humano e científico',
+    description: 'Acolhimento e cuidado — sem pressa e sem pressão.',
+  },
+];
+
+export type ReservedTestimonial = { id: string; topic: string; role: string };
+
+/**
+ * Testimonials are RESERVED slots. Real, consented stories will be loaded from
+ * the backend after explicit consent. We do NOT invent testimonials.
+ */
+export const reservedTestimonials: ReservedTestimonial[] = [
+  { id: 't1', topic: 'Constância na rotina', role: 'Participante do programa' },
+  { id: 't2', topic: 'Mais clareza e energia', role: 'Participante do programa' },
+  { id: 't3', topic: 'Continuidade depois do programa', role: 'Participante do programa' },
+];
+
+export type FaqItem = { id: string; q: string; a: string };
+
+export const liaFaq: FaqItem[] = [
+  {
+    id: 'o-que-e',
+    q: 'O que é a LIA?',
+    a: 'A LIA é a assistente virtual de bem-estar da LeveLab. Conversa sobre rotina, alimentação, movimento, sono e hábitos — sempre identificada como inteligência artificial.',
+  },
+  {
+    id: 'medica',
+    q: 'A LIA dá conselhos médicos ou receitas?',
+    a: 'Não. A LIA é educativa e de bem-estar. Não faz diagnóstico, prescrição ou tratamento. Para decisões clínicas, procure um profissional de saúde.',
+  },
+  {
+    id: 'privacidade',
+    q: 'Como funciona a privacidade?',
+    a: 'No modo público, a LIA tem memória curta e não guarda dados sensíveis. A persistência de conta e progresso chega numa próxima fase, com a sua autorização.',
+  },
+  {
+    id: 'idiomas',
+    q: 'Em que idiomas a LIA fala?',
+    a: 'Português do Brasil é o idioma principal. Outros idiomas serão adicionados progressivamente.',
+  },
+  {
+    id: 'whatsapp',
+    q: 'Posso continuar no WhatsApp?',
+    a: 'Sim. Pode continuar a conversa no WhatsApp e falar com a equipa de apoio humano da LeveLab.',
+  },
+  {
+    id: 'lancamento',
+    q: 'Quando a LIA estreia?',
+    a: 'Lançamento em breve — Sábado, 12/10/2026, às 20h. Entre no grupo de lançamento para receber o acesso.',
+  },
+];
+
+export type LiaCapability = { id: string; label: string; description: string };
+
+export const liaCapabilities: LiaCapability[] = [
+  { id: 'alimentacao', label: 'Alimentação', description: 'Organizar refeições que sustentam o dia.' },
+  { id: 'rotina', label: 'Rotina', description: 'Montar uma rotina realista e calma.' },
+  { id: 'bem-estar', label: 'Bem-estar', description: 'Sono, descanso e recuperação.' },
+  { id: 'movimento', label: 'Movimento', description: 'Encaixar movimento que soma.' },
+  { id: 'habitos', label: 'Hábitos', description: 'Pequenos hábitos que ficam.' },
+  { id: 'motivacao', label: 'Motivação', description: 'Continuar quando fica difícil.' },
+  { id: 'suporte', label: 'Suporte contínuo', description: 'Apoio no dia, todos os dias.' },
+];
+
+export type LiaQuickAction = { id: string; label: string };
+
+export const liaQuickActions: LiaQuickAction[] = [
+  { id: 'planejar-dia', label: 'Planejar meu dia' },
+  { id: 'refeicao', label: 'Organizar uma refeição' },
+  { id: 'movimento', label: 'Movimento de hoje' },
+  { id: 'sono', label: 'Como dormi' },
+  { id: 'voltar-rotina', label: 'Preciso voltar à rotina' },
+  { id: 'corpo-forte', label: 'Ver como funciona o Corpo Forte' },
+  { id: 'ana', label: 'Falar com Ana' },
+];
+
+export type ChatMessage = { role: 'lia' | 'user'; text: string };
+
+export const liaMockConversation: ChatMessage[] = [
+  {
+    role: 'lia',
+    text: 'Olá! Sou a LIA, assistente de bem-estar da LeveLab. Posso ajudar com rotina, alimentação, movimento e hábitos. Por onde quer começar?',
+  },
+  { role: 'user', text: 'Queria organizar melhor a minha rotina da manhã.' },
+  {
+    role: 'lia',
+    text: 'Boa escolha. Que tal começarmos por um pequeno hábito: beber água e definir uma intenção para o dia? Posso ajudar a montar isso passo a passo.',
+  },
+];
+
+export type AnaInfo = { name: string; role: string; blurb: string; placeholder: string };
+
+export const anaInfo: AnaInfo = {
+  name: 'Ana Gomes',
+  role: 'Gerente Comercial',
+  blurb:
+    'Ajuda em dúvidas comerciais, onboarding e suporte premium. Falar com a Ana é ter uma pessoa do lado de cá.',
+  placeholder: '/placeholders/ana-gomes-placeholder.svg',
+};
+
+export const liaInfo = {
+  tagline: 'A tua companheira de conversas para um bem-estar real e duradouro.',
+  identity: 'LIA é uma assistente virtual de bem-estar da LeveLab.',
+  placeholder: '/placeholders/lia-placeholder.svg',
+  statusLabel: 'Online em breve',
+};

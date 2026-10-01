@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240" role="img" aria-label="LIA — placeholder visual">
+  <defs>
+    <linearGradient id="lia-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#153d31"/>
+      <stop offset="1" stop-color="#245b49"/>
+    </linearGradient>
+    <linearGradient id="lia-leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c8b892"/>
+      <stop offset="1" stop-color="#b79a5b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="120" cy="120" r="118" fill="url(#lia-bg)"/>
+  <circle cx="120" cy="120" r="118" fill="none" stroke="#b79a5b" stroke-opacity="0.35" stroke-width="2"/>
+  <circle cx="120" cy="120" r="98" fill="none" stroke="#fbf8f0" stroke-opacity="0.14" stroke-width="1"/>
+  <!-- botanical leaf accent -->
+  <path d="M120 44c26 18 40 44 40 70 0 30-18 52-40 62-22-10-40-32-40-62 0-26 14-52 40-70z" fill="none" stroke="url(#lia-leaf)" stroke-opacity="0.55" stroke-width="1.5"/>
+  <path d="M120 52c0 40 0 84 0 116" stroke="#c8b892" stroke-opacity="0.5" stroke-width="1.2"/>
+  <!-- serif L monogram -->
+  <text x="120" y="156" font-family="Georgia, 'Times New Roman', serif" font-size="118" font-style="italic" font-weight="500" text-anchor="middle" fill="#fbf8f0">L</text>
+  <!-- small lia caption -->
+  <text x="120" y="206" font-family="Inter, system-ui, sans-serif" font-size="13" letter-spacing="6" text-anchor="middle" fill="#c8b892">LIA</text>
+</svg>
