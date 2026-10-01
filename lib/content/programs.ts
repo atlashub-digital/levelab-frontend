@@ -2,8 +2,11 @@
  * LeveLab programs — Corpo Forte (8 weeks) + Força na Caneta (7 days).
  * Educational/wellness framing only. No medical claims, no weight-loss promises.
  *
- * Week titles follow the approved editorial structure from
- * docs/ZAI_WEB_BUILD_PROMPT.md.
+ * Spec source: levelab-zai-ui-spec-v1.0.json → content_catalog
+ * - Corpo Forte: PROGRAM, subtitle "Programa Interativo LeveLab de 8 Semanas",
+ *   seal "Guia Premium", Week 1 title "Mais do que um número".
+ * - Força na Caneta: EBOOK, subtitle "Coleção LeveLab • Guia de 7 dias",
+ *   tagline "Pequenas escolhas. Grandes mudanças.", seal "E-book Premium".
  */
 
 export type ProgramWeek = {
@@ -21,6 +24,10 @@ export type ProgramWeek = {
 export type ProgramMeta = {
   slug: 'corpo-forte' | 'forca-na-caneta';
   name: string;
+  /** Catalog type — PROGRAM (multi-week course) or EBOOK (short guide). */
+  type: 'PROGRAM' | 'EBOOK';
+  /** Editorial subtitle, shown on cards and hero blocks. */
+  subtitle: string;
   kind: 'programa' | 'guia';
   duration: string;
   tagline: string;
@@ -33,6 +40,8 @@ export type ProgramMeta = {
 export const corpoForte: ProgramMeta = {
   slug: 'corpo-forte',
   name: 'Corpo Forte',
+  type: 'PROGRAM',
+  subtitle: 'Programa Interativo LeveLab de 8 Semanas',
   kind: 'programa',
   duration: '8 semanas',
   tagline: 'Corpo Forte não é um tipo de corpo. É uma capacidade.',
@@ -43,10 +52,10 @@ export const corpoForte: ProgramMeta = {
     {
       n: 1,
       slug: 'semana-1',
-      title: 'Progresso além da balança',
-      focus: 'Clareza e constância',
+      title: 'Mais do que um número',
+      focus: 'Para além da balança',
       summary:
-        'Olhar para o progresso de forma mais ampla — energia, rotina, sono e constância — em vez de depender só da balança.',
+        'Olhar para o progresso de forma mais ampla — energia, rotina, sono e constância — em vez de depender só do número na balança.',
       experiment: 'Definir um marcador de progresso que não seja o peso.',
       pageStart: 1,
       pageEnd: 14,
@@ -128,12 +137,14 @@ export const corpoForte: ProgramMeta = {
 export const forcaNaCaneta: ProgramMeta = {
   slug: 'forca-na-caneta',
   name: 'Força na Caneta',
+  type: 'EBOOK',
+  subtitle: 'Coleção LeveLab • Guia de 7 dias',
   kind: 'guia',
   duration: '7 dias',
-  tagline: 'Olhar para o apetite com clareza — um guia educativo, prático e calmo.',
+  tagline: 'Pequenas escolhas. Grandes mudanças.',
   description:
     'Guia educativo LeveLab de 7 dias sobre organização de refeições, apetite e escolhas. Educativo, não prescritivo.',
-  seal: 'Guia Premium',
+  seal: 'E-book Premium',
   days: [
     {
       n: 1,

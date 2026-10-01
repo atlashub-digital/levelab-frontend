@@ -15,6 +15,8 @@ export type ProgramCardItem = {
   accent: 'forest' | 'olive' | 'gold' | 'sage';
   badge?: string;
   kind?: string;
+  /** Optional CTA label override (e.g. 'Ver programa' per spec). */
+  ctaLabel?: string;
 };
 
 export function ProgramCard({
@@ -56,7 +58,7 @@ export function ProgramCard({
       <p className="relative mt-2 text-[15px] italic text-forest-2">{item.tagline}</p>
       <p className="relative mt-3 text-sm leading-relaxed text-muted">{item.description}</p>
       <div className="relative mt-6 inline-flex items-center gap-2 text-sm font-semibold text-forest">
-        {copy.common.readMore}
+        {item.ctaLabel ?? copy.common.readMore}
         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
       </div>
     </Link>

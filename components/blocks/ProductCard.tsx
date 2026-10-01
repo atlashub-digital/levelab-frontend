@@ -4,11 +4,21 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Card';
 import { ProductVisual } from '@/components/blocks/ProductVisual';
-import { formatPrice } from '@/lib/utils';
-import { getCurrencyForLocale } from '@/lib/content/store';
 import type { Product } from '@/lib/content/store';
 import type { Locale } from '@/lib/i18n';
 
+/**
+ * Product card for the LeveLab store / catalogue.
+ *
+ * Spec (levelab-zai-ui-spec-v1.0.json → pages.store.commerce_phase):
+ *   price_rule = "Do not hard-code the Euro prices visible in the visual mockup.
+ *   Prices remain config/API driven and can be hidden until confirmed."
+ *
+ * V1 does NOT render any price block. When `product.price` is `undefined`
+ * (the V1 default), this card renders nothing for price. A future phase-2
+ * catalog provider can populate `price` / `compareAtPrice` and this card
+ * will pick them up automatically (rendering logic is gated on `!= null`).
+ */
 export function ProductCard({
   product,
   locale,
@@ -18,9 +28,10 @@ export function ProductCard({
   locale: Locale;
   className?: string;
 }) {
-  const { locale: intl, currency } = getCurrencyForLocale(locale);
   const href = `/${locale}${product.path}`;
   const monogram = product.title.charAt(0);
+  const showPrice = product.price != null;
+  const showCompareAt = product.compareAtPrice != null && product.compareAtPrice > (product.price ?? 0);
   return (
     <article
       className={cn(
@@ -43,23 +54,37 @@ export function ProductCard({
         </div>
         <p className="text-[15px] leading-relaxed text-ink/80">{product.tagline}</p>
         <div className="mt-auto flex items-end justify-between pt-2">
-          <div className="flex items-baseline gap-2">
-            <span className="font-display text-2xl font-medium text-forest">
-              {formatPrice(product.price, intl, currency)}
-            </span>
-            {product.compareAtPrice ? (
-              <span className="text-sm text-muted line-through">
-                {formatPrice(product.compareAtPrice, intl, currency)}
+          {showPrice ? (
+            <div className="flex items-baseline gap-2">
+              <span className="font-display text-2xl font-medium text-forest">
+                {/* Prices are rendered via the formatPrice helper when defined.
+                    V1 default: undefined → no price rendered at all. */}
+                {product.price!.toLocaleString('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
               </span>
-            ) : null}
-          </div>
+              {showCompareAt ? (
+                <span className="text-sm text-muted line-through">
+                  {product.compareAtPrice!.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  })}
+                </span>
+              ) : null}
+            </div>
+          ) : (
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted">
+              {product.comingSoon ? 'Em breve' : 'Ver detalhes'}
+            </span>
+          )}
           <Button
             href={href}
             size="sm"
             variant="secondary"
             aria-label={`Ver ${product.title}`}
           >
-            Ver
+            Ver detalhes
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>

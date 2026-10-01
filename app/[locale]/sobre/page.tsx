@@ -132,26 +132,28 @@ export default async function SobrePage({
       {/* Ecosystem */}
       <EcosystemGrid locale={locale} />
 
-      {/* Values */}
+      {/* Values — O Método F.O.R.T.E. */}
       <section className="bg-cream/70 py-16 md:py-24">
         <Container>
           <SectionHeading
             align="center"
             eyebrow="Valores"
-            title="Como pensamos a LeveLab"
-            intro="Quatro princípios que sustentam o método — e que se aplicam a cada conversa, programa e conteúdo."
+            title="O Método F.O.R.T.E."
+            intro="Cinco pilares que sustentam o método — e que se aplicam a cada conversa, programa e conteúdo."
           />
-          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {methodPrinciples.map((p) => (
               <li
                 key={p.id}
-                className="flex flex-col gap-2 rounded-3xl border border-forest/10 bg-white p-6 shadow-soft"
+                className="flex gap-4 rounded-3xl border border-forest/10 bg-white p-6 shadow-soft"
               >
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-forest text-ivory">
-                  <Leaf className="h-5 w-5" />
+                <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-gold font-display text-lg font-medium text-ink">
+                  {p.key}
                 </span>
-                <p className="mt-2 font-display text-lg font-medium text-ink">{p.title}</p>
-                <p className="text-sm leading-relaxed text-muted">{p.description}</p>
+                <div>
+                  <p className="mt-1 font-display text-lg font-medium text-ink">{p.title}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-muted">{p.description}</p>
+                </div>
               </li>
             ))}
           </ul>

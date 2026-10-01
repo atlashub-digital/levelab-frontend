@@ -2,20 +2,25 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Hero } from '@/components/blocks/Hero';
 import { TrustStrip } from '@/components/blocks/TrustStrip';
-import { EcosystemGrid } from '@/components/blocks/EcosystemGrid';
 import { ProgramsSection } from '@/components/blocks/ProgramsSection';
 import { MethodSection } from '@/components/blocks/MethodSection';
-import { HowItWorks } from '@/components/blocks/HowItWorks';
 import { LiaSection } from '@/components/blocks/LiaSection';
 import { ContentHighlights } from '@/components/blocks/ContentHighlights';
-import { TestimonialsSection } from '@/components/blocks/TestimonialsSection';
 import { AnaSection } from '@/components/blocks/AnaSection';
 import { NewsletterCTA } from '@/components/blocks/NewsletterCTA';
-import { FinalCTA } from '@/components/blocks/FinalCTA';
-import { CTABanner } from '@/components/blocks/CTABanner';
 import { getLocaleCopy, isLocale } from '@/lib/i18n';
 import { siteConfig } from '@/config/site';
 
+/**
+ * HOME page.
+ *
+ * Spec (levelab-zai-ui-spec-v1.0.json → pages.home.sections_order):
+ *   hero → trust_strip → programs_featured → method_forte → content_highlights
+ *   → lia_teaser → human_support → newsletter → institutional_footer.
+ *
+ * Removed per spec: EcosystemGrid, HowItWorks, TestimonialsSection,
+ * the corpo-forte CTABanner, FinalCTA. (Footer is rendered by the layout.)
+ */
 export const metadata: Metadata = {
   title: 'LeveLab — Saúde • Bem-estar • Longevidade',
   description:
@@ -42,26 +47,12 @@ export default async function HomePage({
     <>
       <Hero locale={locale} copy={copy} />
       <TrustStrip />
-      <EcosystemGrid locale={locale} />
       <ProgramsSection locale={locale} copy={copy} />
       <MethodSection />
-      <HowItWorks />
-      <LiaSection locale={locale} copy={copy} />
       <ContentHighlights locale={locale} copy={copy} />
-      <TestimonialsSection />
-      <CTABanner
-        eyebrow="Programa em destaque"
-        title="Corpo Forte — Programa Interativo de 8 Semanas"
-        description="Aprendizado, aplicação e progresso em oito semanas estruturadas, com LIA e apoio humano."
-        primaryLabel="Explorar o programa"
-        primaryHref={`/${locale}/programas/corpo-forte`}
-        secondaryLabel="Conversar com a LIA"
-        secondaryHref={`/${locale}/lia`}
-        tone="forest"
-      />
+      <LiaSection locale={locale} copy={copy} />
       <AnaSection copy={copy} />
       <NewsletterCTA />
-      <FinalCTA locale={locale} copy={copy} />
     </>
   );
 }

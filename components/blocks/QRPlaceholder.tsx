@@ -1,66 +1,44 @@
+import { QrCode } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /**
- * QR code placeholder for the LIA launch WhatsApp group.
- * The final invite link will be injected into config/site.ts → liaWhatsappGroupUrl
- * before the 12/10/2026 launch. This is a clearly-labelled placeholder visual.
+ * QR placeholder for the LIA launch WhatsApp group.
+ *
+ * Spec (levelab-zai-ui-spec-v1.0.json → lia.launch):
+ *   - whatsapp_group_url = null
+ *   - qr_code_value = null
+ *   - when_missing_link = "Render a polished disabled/placeholder state reading
+ *     'Link do grupo em breve'; never generate a fake QR code."
+ *   - render_fake_qr = false
+ *
+ * This component NEVER generates a fake QR pattern. It renders a polished
+ * DISABLED placeholder: a rounded box with a greyed QrCode lucide icon +
+ * the canonical 'Link do grupo em breve' text. When the launch URL is
+ * supplied via NEXT_PUBLIC_LIA_LAUNCH_GROUP_URL, the LIA page renders a
+ * real QR code instead (and an active WhatsApp CTA).
  */
-export function QRPlaceholder({ size = 160, className }: { size?: number; className?: string }) {
-  // deterministic pseudo-random module pattern (not a real code)
-  const modules: boolean[] = [];
-  let seed = 7;
-  for (let i = 0; i < 21 * 21; i++) {
-    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-    modules.push((seed >> 8) % 2 === 0);
-  }
-  const cell = size / 21;
-  const isFinder = (r: number, c: number) => {
-    const inBox = (br: number, bc: number) =>
-      r >= br && r < br + 7 && c >= bc && c < bc + 7;
-    return inBox(0, 0) || inBox(0, 14) || inBox(14, 0);
-  };
-  const finderCell = (r: number, c: number) => {
-    const inBox = (br: number, bc: number) => {
-      if (r < br || r >= br + 7 || c < bc || c >= bc + 7) return null;
-      const dr = r - br;
-      const dc = c - bc;
-      if (dr === 0 || dr === 6 || dc === 0 || dc === 6) return true;
-      if (dr >= 2 && dr <= 4 && dc >= 2 && dc <= 4) return true;
-      return false;
-    };
-    return inBox(0, 0) ?? inBox(0, 14) ?? inBox(14, 0);
-  };
-
+export function QRPlaceholder({
+  size = 160,
+  className,
+}: {
+  size?: number;
+  className?: string;
+}) {
   return (
     <div
-      className={cn('rounded-2xl border border-forest/15 bg-white p-3 shadow-soft', className)}
-      style={{ width: size + 24, height: size + 24 }}
+      role="img"
+      aria-label="Link do grupo em breve — placeholder do QR code"
+      className={cn(
+        'flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-forest/20 bg-cream/40 p-4 text-center',
+        className,
+      )}
+      style={{ width: size, height: size }}
     >
-      <svg
-        viewBox={`0 0 ${size} ${size}`}
-        width={size}
-        height={size}
-        role="img"
-        aria-label="QR code placeholder — link final será inserido"
-      >
-        <rect width={size} height={size} fill="#fbf8f0" />
-        {Array.from({ length: 21 }).map((_, r) =>
-          Array.from({ length: 21 }).map((_, c) => {
-            const filled = isFinder(r, c) ? finderCell(r, c) : modules[r * 21 + c];
-            if (!filled) return null;
-            return (
-              <rect
-                key={`${r}-${c}`}
-                x={c * cell}
-                y={r * cell}
-                width={cell}
-                height={cell}
-                fill="#15302a"
-              />
-            );
-          }),
-        )}
-      </svg>
+      <QrCode className="text-forest/30" style={{ width: size * 0.34, height: size * 0.34 }} />
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted">
+        Link do grupo
+      </p>
+      <p className="text-[10px] font-medium text-forest/60">em breve</p>
     </div>
   );
 }

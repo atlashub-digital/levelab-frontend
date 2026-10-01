@@ -42,6 +42,7 @@ export default async function CorpoForteReaderPage({
 
   return (
     <ReaderShell
+      key={module.week.slug}
       locale={locale}
       copy={copy}
       program={program}

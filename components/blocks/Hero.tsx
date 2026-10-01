@@ -28,7 +28,7 @@ export function Hero({ locale, copy }: { locale: string; copy: LocaleCopy }) {
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link
-              href={`/${locale}/avaliacao`}
+              href={`/${locale}/programas`}
               className="inline-flex h-14 items-center gap-2 rounded-full bg-forest px-8 text-base font-semibold text-white shadow-soft transition-all hover:bg-forest-2 hover:shadow-lift"
             >
               <Sparkles className="h-4 w-4" />

@@ -2,37 +2,63 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import {
-  Salad,
   CalendarHeart,
   Moon,
   Activity,
   Repeat,
-  Flame,
+  Salad,
+  ListChecks,
   Headset,
-  MessageCircle,
   Sparkles,
+  MessageCircle,
   ArrowRight,
+  ShieldCheck,
 } from 'lucide-react';
 import { LiaChat } from '@/components/lia/LiaChat';
-import { ChatMockup } from '@/components/blocks/ChatMockup';
 import { WhatsAppCTA } from '@/components/blocks/WhatsAppCTA';
 import { QRPlaceholder } from '@/components/blocks/QRPlaceholder';
 import { LIAAvatar } from '@/components/blocks/LIAAvatar';
 import { FAQ } from '@/components/blocks/FAQ';
-import { CTABanner } from '@/components/blocks/CTABanner';
-import { SectionHeading } from '@/components/ui/Section';
-import { liaCapabilities, liaFaq, liaInfo } from '@/lib/content/brand';
-import { siteConfig } from '@/config/site';
+import { SectionHeading, Section, Container } from '@/components/ui/Section';
+import { liaCapabilities, liaFaq, liaInfo, aiTransparencyCopy } from '@/lib/content/brand';
+import { siteConfig, getLiaLaunchGroupUrl } from '@/config/site';
 import { getLocaleCopy, isLocale } from '@/lib/i18n';
 
+/**
+ * LIA page — pre-launch visual webchat.
+ *
+ * Spec (levelab-zai-ui-spec-v1.0.json → pages.lia.sections_order):
+ *   hero_with_canonical_LIA → coming_soon_banner → webchat_visual_demo →
+ *   capabilities_grid → whatsapp_launch_group → ai_transparency → faq → footer.
+ *
+ * WhatsApp launch group:
+ *   - URL comes from getLiaLaunchGroupUrl() (NEXT_PUBLIC_LIA_LAUNCH_GROUP_URL).
+ *   - When set: render an active WhatsAppCTA linking to it + a REAL QR image
+ *     built from the same URL (render_fake_qr: false).
+ *   - When null (current default): render the DISABLED QRPlaceholder +
+ *     a disabled WhatsAppCTA labeled 'Link do grupo em breve'. NEVER fake QR.
+ *
+ * Launch text comes from siteConfig.liaLaunchLabel (config-driven). We do NOT
+ * independently assert the weekday — the user-provided text is preserved
+ * verbatim (see config/site.ts date_validation_warning note).
+ */
 export const metadata: Metadata = {
-  title: 'LIA — Assistente de bem-estar',
+  title: 'LIA — Assistente de bem-estar · LeveLab',
   description:
-    'LIA é a assistente virtual de bem-estar da LeveLab. Conversas sobre rotina, alimentação, movimento e hábitos. Lançamento em 12/10/2026.',
+    'Conheça a LIA, assistente virtual de bem-estar da LeveLab Care. Conversas sobre rotina, hábitos, conteúdos e acompanhamento — com handoff para atendimento humano.',
   alternates: { canonical: '/pt-br/lia' },
 };
 
-const capabilityIcons = [Salad, CalendarHeart, Moon, Activity, Repeat, Flame, Headset];
+const capabilityIcons = [
+  CalendarHeart, // rotina
+  Repeat, // hábitos
+  Salad, // alimentação geral
+  Activity, // movimento
+  Moon, // sono e bem-estar
+  ListChecks, // navegação dos conteúdos / check-ins (overlapping by design)
+  ListChecks,
+  Headset, // handoff para atendimento humano
+];
 
 export default async function LiaPage({
   params,
@@ -43,29 +69,36 @@ export default async function LiaPage({
   if (!isLocale(locale)) notFound();
   const copy = getLocaleCopy(locale);
 
+  // Config-driven launch group URL. null in V1 (env var not set).
+  const launchGroupUrl = getLiaLaunchGroupUrl();
+
   return (
     <>
-      {/* Launch banner */}
+      {/* coming_soon_banner (config-driven) */}
       <div className="bg-gradient-gold text-ink">
         <div className="shell flex flex-col items-center justify-between gap-3 py-3 text-center md:flex-row md:text-left">
           <p className="flex items-center gap-2 text-sm font-semibold">
             <Sparkles className="h-4 w-4" />
             {siteConfig.liaLaunchLabel}
           </p>
-          <WhatsAppCTA
-            phone={siteConfig.liaWhatsappNumber}
-            text="Quero entrar no grupo de lançamento da LIA."
-            variant="primary"
-            size="sm"
-            className="!bg-forest !text-white"
-          >
-            <MessageCircle className="h-4 w-4" />
-            Entrar no grupo de lançamento
-          </WhatsAppCTA>
+          {launchGroupUrl ? (
+            <WhatsAppCTA
+              href={launchGroupUrl}
+              variant="primary"
+              size="sm"
+              className="!bg-forest !text-white"
+            >
+              Entrar no Grupo WhatsApp do Lançamento
+            </WhatsAppCTA>
+          ) : (
+            <WhatsAppCTA disabled variant="primary" size="sm" className="!bg-forest !text-white">
+              Link do grupo em breve
+            </WhatsAppCTA>
+          )}
         </div>
       </div>
 
-      {/* Hero */}
+      {/* hero_with_canonical_LIA */}
       <section className="relative overflow-hidden">
         <div
           aria-hidden
@@ -75,37 +108,39 @@ export default async function LiaPage({
           <div>
             <span className="eyebrow inline-flex items-center gap-2">
               <Sparkles className="h-3.5 w-3.5 text-gold" />
-              Assistente de bem-estar
+              {liaInfo.identity}
             </span>
             <h1 className="mt-4 text-balance font-display text-[clamp(2.4rem,5.5vw,4.2rem)] font-medium leading-[1] text-ink">
               {liaInfo.tagline}
             </h1>
             <p className="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-muted">
-              {liaInfo.identity} Conversa sobre rotina, alimentação, movimento, sono e hábitos —
-              com método LeveLab e apoio humano quando precisar.
+              {liaInfo.subheadline}
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <WhatsAppCTA
-                phone={siteConfig.liaWhatsappNumber}
-                text="Quero entrar no grupo de lançamento da LIA."
-                variant="primary"
-              >
-                <MessageCircle className="h-4 w-4" />
-                Entrar no grupo WhatsApp
-              </WhatsAppCTA>
               <a
                 href="#conversar"
-                className="inline-flex h-12 items-center gap-2 rounded-full border border-forest/25 px-6 text-sm font-semibold text-forest transition-colors hover:bg-forest/5"
+                className="inline-flex h-12 items-center gap-2 rounded-full bg-forest px-6 text-sm font-semibold text-white shadow-soft transition-all hover:bg-forest-2 hover:shadow-lift"
               >
                 <Sparkles className="h-4 w-4" />
                 Testar a LIA agora
               </a>
+              {launchGroupUrl ? (
+                <WhatsAppCTA href={launchGroupUrl} variant="secondary" size="md">
+                  Entrar no grupo
+                </WhatsAppCTA>
+              ) : (
+                <span className="inline-flex h-12 items-center gap-2 rounded-full border border-forest/25 px-6 text-sm font-medium text-forest/60">
+                  <MessageCircle className="h-4 w-4" />
+                  Link do grupo em breve
+                </span>
+              )}
             </div>
             <p className="mt-3 text-xs text-muted">
-              O link final do grupo será inserido aqui antes do lançamento. QR code abaixo.
+              Receba o acesso em primeira mão — o link oficial sai no grupo de lançamento.
             </p>
           </div>
 
+          {/* LIA avatar placeholder (canonical placeholder — DO NOT generate a face) */}
           <div className="relative">
             <div className="relative mx-auto flex max-w-sm flex-col items-center gap-5 rounded-[2.5rem] border border-forest/10 bg-white/80 p-8 text-center shadow-card backdrop-blur">
               <LIAAvatar size={120} />
@@ -114,18 +149,12 @@ export default async function LiaPage({
               <span className="inline-flex items-center gap-1.5 rounded-full bg-sage px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-forest">
                 {liaInfo.statusLabel}
               </span>
-              <div className="mt-2 flex flex-col items-center gap-3 border-t border-forest/10 pt-5">
-                <QRPlaceholder size={150} />
-                <p className="max-w-[15rem] text-xs text-muted">
-                  Escaneie para entrar no grupo de lançamento. Link final disponível em breve.
-                </p>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Interactive chat */}
+      {/* webchat_visual_demo */}
       <section id="conversar" className="border-t border-forest/10 bg-cream/40">
         <div className="shell py-12">
           <SectionHeading
@@ -140,14 +169,14 @@ export default async function LiaPage({
         </div>
       </section>
 
-      {/* Capabilities */}
+      {/* capabilities_grid (8 capabilities) */}
       <section className="py-20 md:py-28">
         <div className="shell">
           <SectionHeading
             align="center"
             eyebrow="Capacidades"
             title="A LIA ajuda no seu dia"
-            intro="Sete áreas onde a LIA pode conversar com você — sempre educativa, nunca clínica."
+            intro="Oito áreas onde a LIA pode conversar com você — sempre educativa, nunca clínica."
           />
           <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {liaCapabilities.map((c, i) => {
@@ -169,55 +198,109 @@ export default async function LiaPage({
         </div>
       </section>
 
-      {/* Benefits */}
+      {/* whatsapp_launch_group */}
       <section className="bg-cream/70 py-20 md:py-28">
         <div className="shell grid items-center gap-12 lg:grid-cols-2">
-          <div className="relative">
-            <div className="overflow-hidden rounded-[2.5rem] border border-forest/10 bg-white p-6 shadow-card">
-              <ChatMockup />
-            </div>
-          </div>
           <div>
             <SectionHeading
-              eyebrow="Benefícios"
-              title="Mais do que respostas — continuidade"
-              intro="A LIA não é uma busca. É uma companheira que ajuda a montar o dia, voltar à rotina e manter o que importa."
+              eyebrow="Grupo de lançamento"
+              title="Receba o acesso em primeira mão"
+              intro="Entre no grupo de lançamento da LIA para receber o link oficial, novidades e o acesso antes de todos."
             />
-            <ul className="mt-8 flex flex-col gap-3">
-              {[
-                'Conversas práticas, sem jargão clínico.',
-                'Ajudar a montar pequenos hábitos que ficam.',
-                'Continuar no WhatsApp com a sua equipa.',
-                'Sempre identificada como inteligência artificial.',
-              ].map((b) => (
-                <li key={b} className="flex items-start gap-3 rounded-2xl border border-forest/10 bg-white p-4">
-                  <span className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-gold text-[11px] font-bold text-ink">
-                    ✓
-                  </span>
-                  <p className="text-sm text-ink/85">{b}</p>
-                </li>
-              ))}
-            </ul>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              {launchGroupUrl ? (
+                <>
+                  <WhatsAppCTA href={launchGroupUrl} variant="primary" size="md">
+                    Entrar no Grupo WhatsApp do Lançamento
+                  </WhatsAppCTA>
+                  <Link
+                    href={`/${locale}/contato`}
+                    className="inline-flex h-12 items-center gap-2 rounded-full border border-forest/25 px-6 text-sm font-semibold text-forest transition-colors hover:bg-forest/5"
+                  >
+                    Falar com a Ana
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <WhatsAppCTA disabled variant="primary" size="md">
+                    Link do grupo em breve
+                  </WhatsAppCTA>
+                  <Link
+                    href={`/${locale}/contato`}
+                    className="inline-flex h-12 items-center gap-2 rounded-full border border-forest/25 px-6 text-sm font-semibold text-forest transition-colors hover:bg-forest/5"
+                  >
+                    Falar com a Ana
+                  </Link>
+                </>
+              )}
+            </div>
+            <p className="mt-3 text-xs text-muted">
+              O link e o QR code reais serão publicados assim que o grupo
+              oficial for aberto. Nunca geramos um QR falso.
+            </p>
+          </div>
+
+          <div className="flex flex-col items-center gap-5 rounded-[2.5rem] border border-forest/10 bg-white p-8 text-center shadow-card">
+            {launchGroupUrl ? (
+              // Real QR (render_fake_qr: false). Built from the same URL via
+              // a public QR generation API — TODO(integration): swap to a
+              // local QR library (e.g. `qrcode`) to avoid the external call.
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=8&data=${encodeURIComponent(launchGroupUrl)}`}
+                  alt="QR code para o grupo de lançamento da LIA no WhatsApp"
+                  width={184}
+                  height={184}
+                  className="rounded-2xl border border-forest/10 bg-ivory p-3"
+                />
+                <p className="max-w-[15rem] text-xs text-muted">
+                  Escaneie para entrar no grupo oficial.
+                </p>
+              </>
+            ) : (
+              <>
+                <QRPlaceholder size={184} />
+                <p className="max-w-[15rem] text-xs text-muted">
+                  Link do grupo em breve. O QR real será exibido aqui assim que
+                  o link oficial estiver disponível.
+                </p>
+              </>
+            )}
           </div>
         </div>
       </section>
 
+      {/* ai_transparency */}
+      <section className="py-16 md:py-20">
+        <Container>
+          <div className="mx-auto max-w-3xl rounded-3xl border border-forest/10 bg-gradient-forest p-8 text-ivory shadow-card md:p-10">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-gold text-ink">
+                <ShieldCheck className="h-5 w-5" />
+              </span>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold-soft">
+                Transparência em IA
+              </p>
+            </div>
+            <p className="mt-4 font-display text-[clamp(1.4rem,2.4vw,1.9rem)] font-medium leading-tight">
+              {aiTransparencyCopy}
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-ivory/80">
+              A LIA não faz diagnóstico, prescrição, ajuste de dose nem substitui
+              médico, nutricionista ou outro profissional qualificado. Em casos
+              clínicos, procure atendimento humano.
+            </p>
+          </div>
+        </Container>
+      </section>
+
+      {/* faq */}
       <FAQ
         eyebrow="FAQ"
         title="Perguntas frequentes sobre a LIA"
         intro="O essencial sobre a LIA, privacidade e limites."
         items={liaFaq}
-      />
-
-      <CTABanner
-        eyebrow="Não fique de fora"
-        title="Entre no grupo de lançamento da LIA"
-        description="Receba o acesso em primeira mão no sábado, 12/10/2026, às 20h. O link final será partilhado no grupo."
-        primaryLabel="Entrar no grupo WhatsApp"
-        primaryHref={siteConfig.liaWhatsappGroupUrl}
-        secondaryLabel="Falar com Ana"
-        secondaryHref={`/${locale}/contato`}
-        tone="forest"
       />
 
       <div className="pb-20 text-center">

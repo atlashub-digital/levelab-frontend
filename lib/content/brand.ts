@@ -98,30 +98,58 @@ export const howItWorks: HowStep[] = [
   { n: 6, title: 'Continuidade', description: 'Um plano que segue depois do programa.' },
 ];
 
-export type MethodPrinciple = { id: string; title: string; description: string };
+export type MethodPrinciple = {
+  /** Single-letter key (F/O/R/T/E) shown inside the gold circle. */
+  key: string;
+  id: string;
+  title: string;
+  description: string;
+};
 
+/**
+ * O Método F.O.R.T.E. — five pillars.
+ * Spec source: levelab-zai-ui-spec-v1.0.json → pages.home.method_copy.pillars.
+ */
 export const methodPrinciples: MethodPrinciple[] = [
   {
-    id: 'leve',
-    title: 'Leve',
-    description: 'Sem extremismos. Pequenos hábitos que cabem na vida real.',
+    key: 'F',
+    id: 'forca',
+    title: 'Força',
+    description: 'Músculos, ossos e capacidade funcional.',
   },
   {
-    id: 'metodo',
-    title: 'Com método',
-    description: 'Estrutura, aprendizado e progresso — não improviso.',
+    key: 'O',
+    id: 'organizacao',
+    title: 'Organização',
+    description: 'Rotina, ambiente e planeamento.',
   },
   {
-    id: 'acompanhado',
-    title: 'Acompanhado',
-    description: 'LIA e apoio humano para não fazer tudo sozinho.',
+    key: 'R',
+    id: 'recuperacao',
+    title: 'Recuperação',
+    description: 'Sono, gestão do stress e tempo para regenerar.',
   },
   {
-    id: 'humano',
-    title: 'Humano e científico',
-    description: 'Acolhimento e cuidado — sem pressa e sem pressão.',
+    key: 'T',
+    id: 'transformacao',
+    title: 'Transformação alimentar',
+    description: 'Alimentação equilibrada, flexível e prazerosa.',
+  },
+  {
+    key: 'E',
+    id: 'emocoes',
+    title: 'Emoções e mentalidade',
+    description: 'Autoconhecimento, motivação e relação consciente com o corpo.',
   },
 ];
+
+/**
+ * AI transparency disclosure — rendered on the LIA page (ai_transparency section)
+ * and on legal pages. LIA must always be identified as an AI assistant.
+ * Spec source: levelab-zai-ui-spec-v1.0.json → lia.transparency_copy.
+ */
+export const aiTransparencyCopy =
+  'A LIA é uma assistente virtual de bem-estar e não substitui profissionais de saúde.';
 
 export type ReservedTestimonial = { id: string; topic: string; role: string };
 
@@ -166,20 +194,59 @@ export const liaFaq: FaqItem[] = [
   {
     id: 'lancamento',
     q: 'Quando a LIA estreia?',
-    a: 'Lançamento em breve — Sábado, 12/10/2026, às 20h. Entre no grupo de lançamento para receber o acesso.',
+    a: 'Lançamento em breve — a data oficial é confirmada na página da LIA. Entre no grupo de lançamento para receber o acesso em primeira mão.',
   },
 ];
 
 export type LiaCapability = { id: string; label: string; description: string };
 
+/**
+ * LIA public capabilities — 8 items per spec
+ * (levelab-zai-ui-spec-v1.0.json → lia.capabilities_for_public_copy):
+ * rotina, hábitos, alimentação geral, movimento, sono e bem-estar,
+ * navegação dos conteúdos LeveLab, check-ins, handoff para atendimento humano.
+ */
 export const liaCapabilities: LiaCapability[] = [
-  { id: 'alimentacao', label: 'Alimentação', description: 'Organizar refeições que sustentam o dia.' },
-  { id: 'rotina', label: 'Rotina', description: 'Montar uma rotina realista e calma.' },
-  { id: 'bem-estar', label: 'Bem-estar', description: 'Sono, descanso e recuperação.' },
-  { id: 'movimento', label: 'Movimento', description: 'Encaixar movimento que soma.' },
-  { id: 'habitos', label: 'Hábitos', description: 'Pequenos hábitos que ficam.' },
-  { id: 'motivacao', label: 'Motivação', description: 'Continuar quando fica difícil.' },
-  { id: 'suporte', label: 'Suporte contínuo', description: 'Apoio no dia, todos os dias.' },
+  {
+    id: 'rotina',
+    label: 'Rotina',
+    description: 'Montar uma rotina realista e calma que cabe no seu dia.',
+  },
+  {
+    id: 'habitos',
+    label: 'Hábitos',
+    description: 'Construir pequenos hábitos que ficam no tempo.',
+  },
+  {
+    id: 'alimentacao-geral',
+    label: 'Alimentação geral',
+    description: 'Conversas práticas sobre organização das refeições — sem prescrição clínica.',
+  },
+  {
+    id: 'movimento',
+    label: 'Movimento',
+    description: 'Encaixar movimento que soma, no seu ritmo.',
+  },
+  {
+    id: 'sono-bem-estar',
+    label: 'Sono e bem-estar',
+    description: 'Sono, descanso e recuperação como parte do progresso.',
+  },
+  {
+    id: 'navegacao-conteudos',
+    label: 'Conteúdos LeveLab',
+    description: 'Navegar pelos programas, guias e conteúdos da LeveLab.',
+  },
+  {
+    id: 'check-ins',
+    label: 'Check-ins',
+    description: 'Check-ins curtos para acompanhar o seu percurso.',
+  },
+  {
+    id: 'handoff-humano',
+    label: 'Apoio humano',
+    description: 'Handoff para atendimento humano quando precisar de mais.',
+  },
 ];
 
 export type LiaQuickAction = { id: string; label: string };
@@ -190,7 +257,7 @@ export const liaQuickActions: LiaQuickAction[] = [
   { id: 'movimento', label: 'Movimento de hoje' },
   { id: 'sono', label: 'Como dormi' },
   { id: 'voltar-rotina', label: 'Preciso voltar à rotina' },
-  { id: 'corpo-forte', label: 'Ver como funciona o Corpo Forte' },
+  { id: 'corpo-forte', label: 'Conhecer o Corpo Forte' },
   { id: 'ana', label: 'Falar com Ana' },
 ];
 
@@ -219,7 +286,11 @@ export const anaInfo: AnaInfo = {
 };
 
 export const liaInfo = {
-  tagline: 'A tua companheira de conversas para um bem-estar real e duradouro.',
+  /** Headline on the LIA page hero (spec: lia.headline). */
+  tagline: 'Bem-estar que conversa com você.',
+  /** Subheadline on the LIA page hero (spec: lia.subheadline). */
+  subheadline:
+    'Conheça a LIA, assistente virtual da LeveLab Care para rotina, hábitos, conteúdos e acompanhamento de bem-estar.',
   identity: 'LIA é uma assistente virtual de bem-estar da LeveLab.',
   placeholder: '/placeholders/lia-placeholder.svg',
   statusLabel: 'Online em breve',

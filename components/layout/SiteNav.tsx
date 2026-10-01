@@ -31,6 +31,7 @@ export function SiteNav({ locale, copy }: { locale: string; copy: LocaleCopy }) 
     { label: copy.nav.home, href: `/${locale}` },
     { label: copy.nav.programs, href: `/${locale}/programas` },
     { label: copy.nav.content, href: `/${locale}/conteudos` },
+    { label: copy.nav.shop, href: `/${locale}/loja` },
     { label: copy.nav.lia, href: `/${locale}/lia` },
     { label: copy.nav.about, href: `/${locale}/sobre` },
     { label: copy.nav.contact, href: `/${locale}/contato` },

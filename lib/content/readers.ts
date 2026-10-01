@@ -4,11 +4,12 @@
  * The V1 Reader uses the released premium PDFs as the authoritative reading
  * assets. The PDFs are NOT bundled in this repo (they live in the LeveLab
  * Drive DAM). The expected local asset paths are documented below so the
- * files can be dropped in WITHOUT code changes:
+ * files can be dropped in WITHOUT code changes (canonical paths per
+ * levelab-zai-ui-spec-v1.0.json → content_catalog):
  *
- *   public/content/corpo-forte/guia-v2.pdf      (105 pages)
- *   public/content/corpo-forte/workbook-v2.pdf  (77 pages)
- *   public/content/forca-na-caneta/forca-na-caneta-v2.pdf (38 pages)
+ *   public/content/corpo-forte/LeveLab_Corpo_Forte_Guia_Premium_v2.0_FINAL.pdf  (105 pages)
+ *   public/content/corpo-forte/LeveLab_Corpo_Forte_Workbook_Premium_v2.0_FINAL.pdf  (77 pages)
+ *   public/content/forca-na-caneta/LeveLab_Forca_na_Caneta_Premium_v2.0_FINAL.pdf  (38 pages)
  *
  * Until the PDFs are present, the MockLearningContentProvider returns premium
  * editorial mock pages so the Reader shell is fully demoable. No lorem ipsum.
@@ -32,7 +33,7 @@ export const readerAssets: ReaderAsset[] = [
     kind: 'guia',
     title: 'Corpo Forte — Guia Premium',
     totalPages: 105,
-    pdfPath: '/content/corpo-forte/guia-v2.pdf',
+    pdfPath: '/content/corpo-forte/LeveLab_Corpo_Forte_Guia_Premium_v2.0_FINAL.pdf',
     status: 'pending-injection',
     version: 'v2.0 FINAL',
   },
@@ -41,7 +42,7 @@ export const readerAssets: ReaderAsset[] = [
     kind: 'workbook',
     title: 'Corpo Forte — Workbook Premium',
     totalPages: 77,
-    pdfPath: '/content/corpo-forte/workbook-v2.pdf',
+    pdfPath: '/content/corpo-forte/LeveLab_Corpo_Forte_Workbook_Premium_v2.0_FINAL.pdf',
     status: 'pending-injection',
     version: 'v2.0 FINAL',
   },
@@ -50,7 +51,7 @@ export const readerAssets: ReaderAsset[] = [
     kind: 'guia',
     title: 'Força na Caneta — Premium',
     totalPages: 38,
-    pdfPath: '/content/forca-na-caneta/forca-na-caneta-v2.pdf',
+    pdfPath: '/content/forca-na-caneta/LeveLab_Forca_na_Caneta_Premium_v2.0_FINAL.pdf',
     status: 'pending-injection',
     version: 'v2.0 FINAL',
   },

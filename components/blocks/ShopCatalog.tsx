@@ -3,8 +3,6 @@
 import { useMemo, useState } from 'react';
 import {
   ArrowDownUp,
-  ArrowUp,
-  ArrowDown,
   ArrowRight,
   Check,
   ChevronDown,
@@ -12,7 +10,7 @@ import {
   Sparkles,
   X,
 } from 'lucide-react';
-import { cn, formatPrice } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Card';
 import { ProductCard } from '@/components/blocks/ProductCard';
@@ -22,17 +20,16 @@ import {
   featuredBundle,
   type Product,
   type ProductCategory,
-  getCurrencyForLocale,
 } from '@/lib/content/store';
 import type { Locale } from '@/lib/i18n';
 
-type SortKey = 'recomendados' | 'preco-asc' | 'preco-desc' | 'novidades';
+type SortKey = 'recomendados' | 'novidades' | 'a-z' | 'z-a';
 
 const sortOptions: { key: SortKey; label: string }[] = [
   { key: 'recomendados', label: 'Recomendados' },
-  { key: 'preco-asc', label: 'Preço ↑' },
-  { key: 'preco-desc', label: 'Preço ↓' },
   { key: 'novidades', label: 'Novidades' },
+  { key: 'a-z', label: 'A → Z' },
+  { key: 'z-a', label: 'Z → A' },
 ];
 
 const ALL_CATEGORIES: ProductCategory[] = [
@@ -47,24 +44,29 @@ const ALL_CATEGORIES: ProductCategory[] = [
 
 /**
  * LeveLab premium shop catalog.
- * Client-side filtering of the static mock catalog. The future LeveLab Store
- * will plug in live catalog + entitlements via the same component surface.
+ *
+ * V1 commerce phase (spec pages.store.commerce_phase):
+ *   "catalogue_ready_checkout_later" + price_rule = "Do not hard-code the Euro
+ *   prices visible in the visual mockup." Prices are intentionally NOT shown —
+ *   the ProductCard renders no price block at all (see ProductCard.tsx).
+ *
+ * Filters (Categoria/Formato) are functional. Objetivo + Preço are present
+ * as visual mock filters (no effect on the list) because there are no prices
+ * in the catalog yet. The price filter is hidden when showPrices is false
+ * (it has nothing to filter on).
  */
 export function ShopCatalog({ locale }: { locale: Locale }) {
-  const { locale: intl, currency } = getCurrencyForLocale(locale);
-  const maxPrice = useMemo(
-    () => Math.max(...allProducts.map((p) => p.price)),
-    [],
-  );
-
-  // State — category multi-select, format multi-select, price cap, sort.
+  // State — category multi-select, format multi-select, objective mock, sort.
   const [selectedCats, setSelectedCats] = useState<Set<ProductCategory>>(
     () => new Set(ALL_CATEGORIES),
   );
   const [selectedFormats, setSelectedFormats] = useState<Set<string>>(
     () => new Set(),
   );
-  const [priceCap, setPriceCap] = useState<number>(maxPrice);
+  const [selectedObjectives, setSelectedObjectives] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const [selectedPriceBand, setSelectedPriceBand] = useState<string>('any');
   const [sort, setSort] = useState<SortKey>('recomendados');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
@@ -79,23 +81,47 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
     return Array.from(seen.values());
   }, []);
 
+  // Objective options — visual/mock multi-select. Does NOT filter the list
+  // (no product has an "objective" field in V1). When the catalog provider
+  // is upgraded to a backend with objective tags, this filter becomes live
+  // without touching the component surface.
+  const objectiveOptions: { id: string; label: string }[] = [
+    { id: 'rotina', label: 'Rotina' },
+    { id: 'alimentacao', label: 'Alimentação geral' },
+    { id: 'movimento', label: 'Movimento' },
+    { id: 'sono', label: 'Sono e recuperação' },
+    { id: 'habitos', label: 'Hábitos' },
+    { id: 'constancia', label: 'Constância' },
+  ];
+
+  // Price band options — visual/mock radio. Spec: pages.store.filters lists
+  // Preço as a filter and explicitly allows it to be visual/mock. Prices are
+  // NOT in the catalog yet (V1 commerce_phase = catalogue_ready_checkout_later,
+  // price_rule = "Do not hard-code the Euro prices"). The radio is present so
+  // the future price filter has a fixed surface; selecting a band does NOT
+  // filter anything until the catalog provider returns prices.
+  const priceBandOptions: { id: string; label: string }[] = [
+    { id: 'any', label: 'Qualquer preço' },
+    { id: 'baixo', label: 'Até €50' },
+    { id: 'medio', label: '€50 – €150' },
+    { id: 'alto', label: '€150 +' },
+  ];
+
   const filtered = useMemo(() => {
-    let list: Product[] = allProducts.filter(
-      (p) => selectedCats.has(p.category) && p.price <= priceCap,
-    );
+    let list: Product[] = allProducts.filter((p) => selectedCats.has(p.category));
     if (selectedFormats.size > 0) {
       list = list.filter((p) => selectedFormats.has(p.format));
     }
     const sorted = [...list];
     switch (sort) {
-      case 'preco-asc':
-        sorted.sort((a, b) => a.price - b.price);
+      case 'a-z':
+        sorted.sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'));
         break;
-      case 'preco-desc':
-        sorted.sort((a, b) => b.price - a.price);
+      case 'z-a':
+        sorted.sort((a, b) => b.title.localeCompare(a.title, 'pt-BR'));
         break;
       case 'novidades':
-        // "Novo" badge first, then by status (live before soon), then default order.
+        // "Novo" badge first, then live before soon, then default order.
         sorted.sort((a, b) => {
           const an = a.badge === 'Novo' ? 0 : 1;
           const bn = b.badge === 'Novo' ? 0 : 1;
@@ -111,7 +137,7 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
         break;
     }
     return sorted;
-  }, [selectedCats, selectedFormats, priceCap, sort]);
+  }, [selectedCats, selectedFormats, sort]);
 
   function toggleCategory(cat: ProductCategory) {
     setSelectedCats((prev) => {
@@ -141,10 +167,20 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
     });
   }
 
+  function toggleObjective(id: string) {
+    setSelectedObjectives((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
   function clearFilters() {
     setSelectedCats(new Set(ALL_CATEGORIES));
     setSelectedFormats(new Set());
-    setPriceCap(maxPrice);
+    setSelectedObjectives(new Set());
+    setSelectedPriceBand('any');
     setSort('recomendados');
   }
 
@@ -154,6 +190,12 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
     : selectedCats.size === 1
       ? Array.from(selectedCats)[0]
       : 'todos';
+
+  const activeFiltersCount =
+    (selectedCats.size !== ALL_CATEGORIES.length ? 1 : 0) +
+    selectedFormats.size +
+    selectedObjectives.size +
+    (selectedPriceBand !== 'any' ? 1 : 0);
 
   const filtersPanel = (
     <div className="flex flex-col gap-7">
@@ -192,6 +234,41 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
         </div>
       </FilterGroup>
 
+      <FilterGroup title="Objetivo">
+        <div className="flex flex-col gap-1.5">
+          {objectiveOptions.map((o) => {
+            const checked = selectedObjectives.has(o.id);
+            return (
+              <label
+                key={o.id}
+                className="flex cursor-pointer items-center gap-3 rounded-xl px-2 py-1.5 text-sm text-ink transition-colors hover:bg-forest/5"
+              >
+                <span
+                  className={cn(
+                    'inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] border transition-colors',
+                    checked
+                      ? 'border-forest bg-forest text-white'
+                      : 'border-forest/30 bg-white text-transparent',
+                  )}
+                >
+                  <Check className="h-3 w-3" />
+                </span>
+                <input
+                  type="checkbox"
+                  className="sr-only"
+                  checked={checked}
+                  onChange={() => toggleObjective(o.id)}
+                />
+                <span>{o.label}</span>
+              </label>
+            );
+          })}
+        </div>
+        <p className="mt-1.5 text-[11px] italic text-muted">
+          Filtro visual — será ligado ao catálogo backend em breve.
+        </p>
+      </FilterGroup>
+
       <FilterGroup title="Formato">
         <div className="flex flex-col gap-1.5">
           {formatOptions.map((f) => {
@@ -224,29 +301,40 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
         </div>
       </FilterGroup>
 
-      <FilterGroup title="Preço máximo">
-        <div className="flex flex-col gap-3">
-          <div className="flex items-baseline justify-between text-sm">
-            <span className="text-muted">até</span>
-            <span className="font-display text-base font-medium text-forest">
-              {formatPrice(priceCap, intl, currency)}
-            </span>
-          </div>
-          <input
-            type="range"
-            min={0}
-            max={maxPrice}
-            step={10}
-            value={priceCap}
-            onChange={(e) => setPriceCap(Number(e.target.value))}
-            className="h-2 w-full cursor-pointer appearance-none rounded-full bg-sage accent-forest"
-            aria-label="Preço máximo"
-          />
-          <div className="flex justify-between text-[11px] text-muted">
-            <span>{formatPrice(0, intl, currency)}</span>
-            <span>{formatPrice(maxPrice, intl, currency)}</span>
-          </div>
+      <FilterGroup title="Preço">
+        <div className="flex flex-col gap-1.5">
+          {priceBandOptions.map((o) => {
+            const checked = selectedPriceBand === o.id;
+            return (
+              <label
+                key={o.id}
+                className="flex cursor-pointer items-center gap-3 rounded-xl px-2 py-1.5 text-sm text-ink transition-colors hover:bg-forest/5"
+              >
+                <span
+                  className={cn(
+                    'inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-colors',
+                    checked
+                      ? 'border-forest bg-forest text-white'
+                      : 'border-forest/30 bg-white text-transparent',
+                  )}
+                >
+                  {checked ? <span className="h-1.5 w-1.5 rounded-full bg-white" /> : null}
+                </span>
+                <input
+                  type="radio"
+                  name="price-band"
+                  className="sr-only"
+                  checked={checked}
+                  onChange={() => setSelectedPriceBand(o.id)}
+                />
+                <span>{o.label}</span>
+              </label>
+            );
+          })}
         </div>
+        <p className="mt-1.5 text-[11px] italic text-muted">
+          Filtro visual — preços serão divulgados quando a LeveLab Store abrir.
+        </p>
       </FilterGroup>
 
       <button
@@ -271,7 +359,7 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
           <div className="max-w-3xl">
             <span className="eyebrow inline-flex items-center gap-2">
               <Sparkles className="h-3.5 w-3.5 text-gold" />
-              Conteúdos · Loja LeveLab
+              Conteúdo e Loja
             </span>
             <h1 className="mt-4 text-balance font-display text-[clamp(2.2rem,5vw,4rem)] font-medium leading-[1.04] text-ink">
               Programas, guias e editorial para acompanhar a sua rotina.
@@ -279,7 +367,8 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
             <p className="mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-muted">
               Conteúdo premium com método LeveLab — aprendizado, aplicação e
               progresso. Cada item é educativo e calmo; nada de promessas
-              rápidas ou clínicas.
+              rápidas ou clínicas. Preços serão divulgados quando a LeveLab
+              Store oficial estiver aberta.
             </p>
           </div>
         </div>
@@ -317,17 +406,15 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
                 </ul>
               </div>
               <div className="rounded-3xl border border-ivory/15 bg-ivory/5 p-6 backdrop-blur">
-                <div className="flex items-baseline gap-3">
-                  <span className="font-display text-4xl font-medium text-ivory">
-                    {formatPrice(featuredBundle.price, intl, currency)}
-                  </span>
-                  <span className="text-base text-ivory/60 line-through">
-                    {formatPrice(featuredBundle.compareAtPrice, intl, currency)}
-                  </span>
-                </div>
-                <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-gradient-gold px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-ink">
+                <span className="inline-flex items-center gap-1 rounded-full bg-gradient-gold px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-ink">
                   {featuredBundle.discountLabel}
                 </span>
+                <p className="mt-4 font-display text-xl font-medium text-ivory">
+                  Bundle essencial
+                </p>
+                <p className="mt-1 text-sm text-ivory/70">
+                  Programa + Workbook + Conteúdos.
+                </p>
                 <div className="mt-6">
                   <Button
                     href={`/${locale}${featuredBundle.path}`}
@@ -396,9 +483,9 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
             >
               <SlidersHorizontal className="h-4 w-4" />
               Filtrar
-              {(selectedCats.size !== ALL_CATEGORIES.length || selectedFormats.size > 0 || priceCap !== maxPrice) ? (
+              {activeFiltersCount > 0 ? (
                 <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-forest px-1.5 text-[11px] font-bold text-white">
-                  {selectedFormats.size + (selectedCats.size !== ALL_CATEGORIES.length ? 1 : 0)}
+                  {activeFiltersCount}
                 </span>
               ) : null}
             </button>
@@ -518,16 +605,15 @@ function FilterGroup({
 function SortLegend() {
   return (
     <div className="mt-10 flex flex-wrap items-center gap-4 rounded-2xl border border-forest/10 bg-cream/50 px-5 py-4 text-[11px] text-muted">
-      <span className="inline-flex items-center gap-1.5 font-semibold uppercase tracking-wider text-forest-2">
-        <ArrowUp className="h-3 w-3" /> Preço ↑
-      </span>
-      <span className="inline-flex items-center gap-1.5 font-semibold uppercase tracking-wider text-forest-2">
-        <ArrowDown className="h-3 w-3" /> Preço ↓
+      <span className="font-semibold uppercase tracking-wider text-forest-2">
+        Recomendados
       </span>
       <span>·</span>
-      <span>Recomendados = ordem editorial curada</span>
+      <span>Ordem editorial curada</span>
       <span>·</span>
       <span>Novidades = lançamentos e badges "Novo" primeiro</span>
+      <span>·</span>
+      <span>Preços serão divulgados quando a LeveLab Store abrir.</span>
     </div>
   );
 }

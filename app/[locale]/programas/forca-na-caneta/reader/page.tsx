@@ -44,6 +44,7 @@ export default async function ForcaNaCanetaReaderPage({
 
   return (
     <ReaderShell
+      key={module.week.slug}
       locale={locale}
       copy={copy}
       program={program}

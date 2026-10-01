@@ -14,6 +14,7 @@ const ROUTES: { path: string; priority: number; changeFrequency?: MetadataRoute.
   { path: '/programas/forca-na-caneta', priority: 0.9, changeFrequency: 'weekly' },
   { path: '/programas/forca-na-caneta/reader', priority: 0.7, changeFrequency: 'weekly' },
   { path: '/conteudos', priority: 0.9, changeFrequency: 'weekly' },
+  { path: '/loja', priority: 0.9, changeFrequency: 'weekly' },
   { path: '/contato', priority: 0.6, changeFrequency: 'monthly' },
   { path: '/faq', priority: 0.7, changeFrequency: 'monthly' },
   { path: '/legal/privacidade', priority: 0.4, changeFrequency: 'yearly' },

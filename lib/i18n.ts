@@ -12,6 +12,7 @@ export type LocaleCopy = {
     care: string;
     programs: string;
     content: string;
+    shop: string;
     lia: string;
     about: string;
     contact: string;
@@ -77,6 +78,7 @@ export const copy: Record<Locale, LocaleCopy> = {
       care: 'Care',
       programs: 'Programas',
       content: 'Conteúdos',
+      shop: 'Loja',
       lia: 'LIA',
       about: 'Sobre',
       contact: 'Contacto',
@@ -85,10 +87,10 @@ export const copy: Record<Locale, LocaleCopy> = {
     },
     hero: {
       eyebrow: 'Saúde • Bem-estar • Longevidade',
-      headline: 'Uma vida mais leve começa com acompanhamento.',
-      lead: 'Organize sua rotina, desenvolva hábitos sustentáveis e tenha a LIA ao seu lado — com método e apoio humano de verdade.',
-      primary: 'Começar minha avaliação',
-      secondary: 'Conversar com a LIA',
+      headline: 'Saúde, bem-estar e transformação com método e acolhimento.',
+      lead: 'A LeveLab reúne conteúdos digitais, programas, acompanhamento e a LIA para ajudar a construir uma rotina mais leve, consciente e sustentável.',
+      primary: 'Explorar Programas',
+      secondary: 'Conhecer a LIA',
     },
     common: {
       talkToLia: 'Conversar com a LIA',
@@ -140,6 +142,7 @@ export const copy: Record<Locale, LocaleCopy> = {
       care: 'Care',
       programs: 'Programas',
       content: 'Conteúdos',
+      shop: 'Loja',
       lia: 'LIA',
       about: 'Sobre',
       contact: 'Contacto',
@@ -148,10 +151,10 @@ export const copy: Record<Locale, LocaleCopy> = {
     },
     hero: {
       eyebrow: 'Saúde • Bem-estar • Longevidade',
-      headline: 'Uma vida mais leve começa com acompanhamento.',
-      lead: 'Organize a sua rotina, desenvolva hábitos sustentáveis e tenha a LIA ao seu lado — com método e apoio humano de verdade.',
-      primary: 'Começar a minha avaliação',
-      secondary: 'Conversar com a LIA',
+      headline: 'Saúde, bem-estar e transformação com método e acolhimento.',
+      lead: 'A LeveLab reúne conteúdos digitais, programas, acompanhamento e a LIA para ajudar a construir uma rotina mais leve, consciente e sustentável.',
+      primary: 'Explorar Programas',
+      secondary: 'Conhecer a LIA',
     },
     common: {
       talkToLia: 'Conversar com a LIA',
@@ -203,6 +206,7 @@ export const copy: Record<Locale, LocaleCopy> = {
       care: 'Care',
       programs: 'Programs',
       content: 'Content',
+      shop: 'Shop',
       lia: 'LIA',
       about: 'About',
       contact: 'Contact',
@@ -211,10 +215,10 @@ export const copy: Record<Locale, LocaleCopy> = {
     },
     hero: {
       eyebrow: 'Health • Well-being • Longevity',
-      headline: 'A lighter life starts with support.',
-      lead: 'Organize your routine, build sustainable habits and keep LIA by your side — with real method and human support.',
-      primary: 'Start my assessment',
-      secondary: 'Talk to LIA',
+      headline: 'Health, well-being and transformation with method and care.',
+      lead: 'LeveLab brings together digital content, programs, support and LIA to help build a lighter, more mindful and sustainable routine.',
+      primary: 'Explore Programs',
+      secondary: 'Meet LIA',
     },
     common: {
       talkToLia: 'Talk to LIA',
@@ -266,6 +270,7 @@ export const copy: Record<Locale, LocaleCopy> = {
       care: 'Care',
       programs: 'Programas',
       content: 'Contenidos',
+      shop: 'Tienda',
       lia: 'LIA',
       about: 'Sobre',
       contact: 'Contacto',
@@ -274,10 +279,10 @@ export const copy: Record<Locale, LocaleCopy> = {
     },
     hero: {
       eyebrow: 'Salud • Bienestar • Longevidad',
-      headline: 'Una vida más ligera comienza con acompañamiento.',
-      lead: 'Organiza tu rutina, desarrolla hábitos sostenibles y ten a LIA a tu lado — con método y apoyo humano real.',
-      primary: 'Comenzar mi evaluación',
-      secondary: 'Hablar con LIA',
+      headline: 'Salud, bienestar y transformación con método y acompañamiento.',
+      lead: 'LeveLab reúne contenidos digitales, programas, acompañamiento y LIA para ayudar a construir una rutina más ligera, consciente y sostenible.',
+      primary: 'Explorar Programas',
+      secondary: 'Conocer a LIA',
     },
     common: {
       talkToLia: 'Hablar con LIA',
