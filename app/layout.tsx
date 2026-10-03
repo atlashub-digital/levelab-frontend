@@ -1,15 +1,17 @@
 import './globals.css';
-import type { Metadata } from 'next';
-import { Fraunces, Inter, Caveat } from 'next/font/google';
+import type { Metadata, Viewport } from 'next';
+import { Allura, Cormorant_Garamond, Inter } from 'next/font/google';
 
-const fraunces = Fraunces({
+/** Display — editorial serif for headlines (never for UI or long body copy). */
+const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
-  variable: '--font-fraunces',
+  variable: '--font-cormorant',
   display: 'swap',
-  weight: ['300', '400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700'],
   style: ['normal', 'italic'],
 });
 
+/** Body / UI — highly legible sans. */
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -17,60 +19,49 @@ const inter = Inter({
   weight: ['300', '400', '500', '600', '700'],
 });
 
-/**
- * Caveat — handwritten/script accent font. Used SPARINGLY via the
- * <ScriptAccent> component for short microcopy (gold ink on cream).
- * Never for long body copy. Loaded via next/font/google (no extra network
- * hop on the client after build).
- */
-const caveat = Caveat({
+/** Accent — handwritten script, used sparingly for short emotional notes. */
+const allura = Allura({
   subsets: ['latin'],
-  variable: '--font-caveat',
+  variable: '--font-allura',
   display: 'swap',
-  weight: ['400', '500', '600', '700'],
+  weight: ['400'],
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://levelab.org'),
+  metadataBase: new URL('https://www.levelab.org'),
   title: {
-    default: 'LeveLab — Saúde • Bem-estar • Longevidade',
+    default: 'LeveLab — Saúde, Bem-Estar e Acompanhamento',
     template: '%s · LeveLab',
   },
   description:
-    'Acompanhamento de rotina, bem-estar e longevidade com método, LIA e apoio humano. Uma marca do Grupo MTX Farma.',
-  keywords: [
-    'LeveLab',
-    'bem-estar',
-    'longevidade',
-    'Corpo Forte',
-    'Força na Caneta',
-    'LIA',
-    'saúde',
-    'rotina',
-    'hábitos',
-  ],
+    'Programas, conteúdos e acompanhamento para uma rotina mais leve, com a LIA e suporte humano LeveLab.',
+  applicationName: 'LeveLab',
+  keywords: ['LeveLab', 'bem-estar', 'longevidade', 'Corpo Forte', 'Força na Caneta', 'LIA', 'rotina', 'hábitos'],
   authors: [{ name: 'LeveLab' }],
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
     siteName: 'LeveLab',
-    title: 'LeveLab — Saúde • Bem-estar • Longevidade',
+    title: 'LeveLab — Saúde, Bem-Estar e Acompanhamento',
     description:
-      'Acompanhamento de rotina, bem-estar e longevidade com método, LIA e apoio humano.',
+      'Programas, conteúdos e acompanhamento para uma rotina mais leve, com a LIA e suporte humano LeveLab.',
+    images: [{ url: '/images/lifestyle/hero-home.webp', width: 1220, height: 772, alt: 'LeveLab' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'LeveLab',
-    description: 'Saúde • Bem-estar • Longevidade',
+    title: 'LeveLab — Saúde, Bem-Estar e Acompanhamento',
+    description: 'Programas, conteúdos e acompanhamento para uma rotina mais leve.',
   },
   robots: { index: true, follow: true },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export const viewport: Viewport = {
+  themeColor: '#173c2f',
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className={`${fraunces.variable} ${inter.variable} ${caveat.variable}`}>
+    <html lang="pt-BR" className={`${cormorant.variable} ${inter.variable} ${allura.variable}`}>
       <body>{children}</body>
     </html>
   );

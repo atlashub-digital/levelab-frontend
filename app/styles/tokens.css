@@ -1,0 +1,66 @@
+/* ----------------------------------------------------------------------------
+   LeveLab Visual V2 — design tokens (docs/LEVELAB-VISUAL-V2.md)
+   Palette from the V2 brief; legacy token names (forest, ivory, gold, muted…)
+   keep working so every page inherits the new identity.
+---------------------------------------------------------------------------- */
+@theme {
+  /* Brand */
+  --color-forest: #173c2f;        /* Forest Deep — primary */
+  --color-forest-dark: #0f2e24;   /* Forest Dark — footer, deep bands */
+  --color-forest-2: #245b49;      /* Forest Secondary — hover, accents */
+  --color-forest-3: #1d4a3b;
+  --color-olive: #4d5a32;
+  --color-sage: #dde6d8;
+  --color-sage-2: #e9efe5;
+  --color-ivory: #fbf7ed;
+  --color-cream: #f4ebdd;         /* Warm Cream */
+  --color-paper: #f8f2e6;
+  --color-sand: #ece1cd;
+  --color-champagne: #c7a866;
+  --color-gold: #a87839;          /* Bronze — text-safe gold */
+  --color-gold-soft: #c7a866;     /* = champagne, decorative */
+  --color-ink: #20302a;
+  --color-muted: #6b665d;         /* Warm Gray, darkened for AA on ivory */
+  --color-line: rgba(32, 48, 42, 0.12);
+
+  /* Typography */
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-body: var(--font-sans);
+  --font-script: var(--font-allura), "Segoe Script", cursive;
+  --font-accent: var(--font-script);
+
+  /* Radius — editorial, restrained (buttons are soft rectangles, not pills) */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+
+  /* Elevation */
+  --shadow-hairline: 0 1px 0 rgba(32, 48, 42, 0.06);
+  --shadow-soft: 0 14px 40px -24px rgba(23, 60, 47, 0.32);
+  --shadow-card: 0 24px 60px -32px rgba(23, 60, 47, 0.38);
+  --shadow-lift: 0 22px 50px -24px rgba(23, 60, 47, 0.45);
+
+  /* Containers */
+  --container-reading: 780px;
+  --container-content: 1200px;
+  --container-wide: 1360px;
+  --container-shell: 1200px;
+
+  /* Motion */
+  --ease-calm: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --duration-fast: 160ms;
+  --duration-base: 260ms;
+  --duration-slow: 600ms;
+}
+
+:root {
+  --header-height: 4.5rem;
+  --z-header: 40;
+  --z-drawer: 50;
+  --z-toast: 60;
+}

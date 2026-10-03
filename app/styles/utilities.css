@@ -1,0 +1,134 @@
+@layer utilities {
+  /* Containers */
+  .shell {
+    width: min(var(--container-content), calc(100% - 2.5rem));
+    margin-inline: auto;
+  }
+  .shell-wide {
+    width: min(var(--container-wide), calc(100% - 2.5rem));
+    margin-inline: auto;
+  }
+  .shell-reading {
+    width: min(var(--container-reading), calc(100% - 2.5rem));
+    margin-inline: auto;
+  }
+
+  /* Editorial type */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.72rem;
+    color: var(--color-forest-2);
+  }
+  .display-xl {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.6rem, 5.2vw, 4.6rem);
+    line-height: 0.98;
+    letter-spacing: -0.015em;
+  }
+  .display-lg {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.1rem, 3.6vw, 3.2rem);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+  }
+  .display-md {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+    line-height: 1.08;
+  }
+  .font-script {
+    font-family: var(--font-script);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.15;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Rules & surfaces */
+  .rule-gold {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-champagne), transparent);
+  }
+  .bg-paper-grain {
+    background-image: radial-gradient(rgba(23, 60, 47, 0.04) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .bg-gradient-forest {
+    background-image: linear-gradient(150deg, var(--color-forest) 0%, var(--color-forest-2) 100%);
+  }
+  .bg-gradient-gold {
+    background-image: linear-gradient(150deg, var(--color-gold) 0%, var(--color-champagne) 100%);
+  }
+  .text-gradient-gold {
+    background: linear-gradient(120deg, var(--color-gold) 0%, var(--color-champagne) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Scrollbars */
+  .scrollbar-soft {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(23, 60, 47, 0.2) transparent;
+  }
+  .scrollbar-soft::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-soft::-webkit-scrollbar-thumb {
+    background: rgba(23, 60, 47, 0.18);
+    border-radius: 999px;
+  }
+  .scrollbar-soft::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Calm reveal (respects prefers-reduced-motion via base.css) */
+  .reveal {
+    animation: reveal var(--duration-slow) var(--ease-calm) both;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes lia-typing {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+.lia-dot {
+  animation: lia-typing 1.2s infinite ease-in-out;
+}
