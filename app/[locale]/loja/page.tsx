@@ -1,88 +1,71 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { ShopCatalog } from '@/components/blocks/ShopCatalog';
+import { CatalogHero } from '@/components/catalog/CatalogHero';
+import { CatalogBrowser } from '@/components/catalog/CatalogBrowser';
+import { PremiumFeature } from '@/components/catalog/PremiumFeature';
 import { FAQ } from '@/components/blocks/FAQ';
-import { CTABanner } from '@/components/blocks/CTABanner';
-import { getLocaleCopy, isLocale } from '@/lib/i18n';
-import { liaFaq } from '@/lib/content/brand';
+import { FinalCTA } from '@/components/home/FinalCTA';
+import { isLocale } from '@/lib/i18n';
 
-/**
- * Loja (Store) page.
- *
- * Spec (levelab-zai-ui-spec-v1.0.json → pages.store):
- *   - route: /[locale]/loja
- *   - commerce_phase: catalogue_ready_checkout_later + "Do not hard-code the
- *     Euro prices visible in the visual mockup." (Prices are NOT shown — see
- *     ProductCard.tsx.)
- *   - filters: Categoria / Objetivo / Formato / Preço. Objetivo + Preço are
- *     visual/mock in V1 (no prices in the catalog yet).
- *
- * Hero banner label: 'Conteúdo e Loja' (ShopCatalog renders it internally).
- */
 export const metadata: Metadata = {
-  title: 'Loja · LeveLab',
+  title: 'Conteúdos e Loja',
   description:
-    'Loja LeveLab — programas, guias, e-books, workbooks, receitas e assinaturas. Catálogo premium com método. Preços serão divulgados quando a LeveLab Store abrir.',
+    'Programas, guias, e-books e workbooks LeveLab — com pré-visualização gratuita no Reader e acompanhamento da LIA.',
   alternates: { canonical: '/pt-br/loja' },
-  openGraph: {
-    title: 'Loja · LeveLab',
-    description:
-      'Programas, guias, e-books, workbooks e assinaturas LeveLab — com método e apoio humano.',
-    url: '/pt-br/loja',
-  },
 };
 
 const storeFaq = [
   {
-    id: 'compra-futura',
-    q: 'Já posso comprar agora?',
-    a: 'Esta é uma pré-visualização do catálogo. A LeveLab Store oficial — com checkout, pagamentos e acesso a entitlements — chega em breve. Por enquanto, pode explorar o catálogo e falar com a equipa para reservas ou dúvidas.',
+    id: 'como-comprar',
+    q: 'Como tenho acesso a um conteúdo?',
+    a: 'Fale conosco pelo WhatsApp: liberamos o acesso no seu e-mail e você começa a ler no Reader, na sua área de membros. A compra online direta chega em breve.',
   },
   {
-    id: 'tipos-conteudo',
-    q: 'Que tipos de conteúdo existem?',
-    a: 'Programas estruturados (semanas ou dias), guias educativos curtos, e-books, workbooks de aplicação, receitas e assinaturas com a LIA no dia a dia.',
+    id: 'previa',
+    q: 'Posso ver antes de decidir?',
+    a: 'Sim. Corpo Forte, o seu Workbook e Força na Caneta têm a capa, a abertura e o índice livres no Reader.',
   },
   {
-    id: 'acompanhamento',
-    q: 'Os conteúdos vêm com acompanhamento?',
-    a: 'Alguns programas e bundles incluem acompanhamento humano e acesso à LIA ao longo do percurso. Os bundles e a descrição de cada item deixam claro o que está incluído.',
+    id: 'em-breve',
+    q: 'O que significa “Em breve”?',
+    a: 'São conteúdos em preparação. Só aparecem como disponíveis quando pode realmente acessá-los.',
   },
   {
-    id: 'educativo-nao-clinico',
-    q: 'Os conteúdos são clínicos?',
-    a: 'Não. Todos os conteúdos LeveLab são educativos e de bem-estar. Não substituem acompanhamento clínico, diagnóstico ou prescrição.',
+    id: 'educativo',
+    q: 'Os conteúdos substituem acompanhamento profissional?',
+    a: 'Não. Todos os conteúdos LeveLab são educativos e de bem-estar: não substituem consulta, diagnóstico ou prescrição.',
   },
 ];
 
-export default async function LojaPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function LojaPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const copy = getLocaleCopy(locale);
-  void copy; // chrome text already rendered by the layout's SiteNav/SiteFooter.
 
   return (
     <>
-      <ShopCatalog locale={locale} />
-      <FAQ
-        eyebrow="FAQ da loja"
-        title="Perguntas sobre a loja"
-        intro="O essencial sobre o catálogo, o que está incluído e os limites educativos."
-        items={[...storeFaq, ...liaFaq]}
+      <CatalogHero
+        title="Conteúdos e"
+        accent="Loja"
+        lead="Conhecimento, ferramentas e programas para uma vida mais leve, saudável e com mais sentido — com a metodologia LeveLab."
+        script="Mais conhecimento. Mais escolhas. Mais vida."
+        badge="Aprenda, aplique e transforme."
       />
-      <CTABanner
-        eyebrow="Não sabe por onde começar?"
-        title="Comece pela conversa com a LIA"
-        description="A LIA ajuda a entender o seu momento e sugerir um ponto de entrada — sem compromisso e sem promessas clínicas."
-        primaryLabel="Falar com a LIA"
-        primaryHref={`/${locale}/lia`}
-        secondaryLabel="Falar com a Ana"
-        secondaryHref={`/${locale}/contato`}
-        tone="forest"
+      <div className="pt-8">
+        <PremiumFeature />
+      </div>
+      <CatalogBrowser locale={locale} />
+      <FAQ
+        eyebrow="Perguntas frequentes"
+        title="Sobre a loja"
+        intro="O essencial sobre acesso, pré-visualizações e limites educativos."
+        items={storeFaq}
+      />
+      <FinalCTA
+        locale={locale}
+        title="Não sabe por onde começar?"
+        lead="Uma avaliação curta ou uma conversa com a LIA ajudam a encontrar o ponto de partida certo."
+        primary="Começar avaliação"
+        secondary="Conversar com a LIA"
       />
     </>
   );

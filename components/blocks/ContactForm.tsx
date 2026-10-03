@@ -50,7 +50,7 @@ export function ContactForm({ locale }: { locale: string }) {
         <p className="mt-2 text-sm text-muted">
           Obrigado, {form.name.split(' ')[0] || 'tudo bem'}. Esta é uma
           demonstração de frontend — nenhuma mensagem foi realmente enviada.
-          Quando o backend estiver pronto, a equipa comercial receberá a sua
+          Quando o backend estiver pronto, a equipe comercial receberá a sua
           mensagem e responderá por email.
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">

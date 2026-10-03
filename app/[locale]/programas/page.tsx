@@ -1,213 +1,154 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ProgramCard, type ProgramCardItem } from '@/components/blocks/ProgramCard';
-import { CTABanner } from '@/components/blocks/CTABanner';
-import { Container, SectionHeading, Section } from '@/components/ui/Section';
-import { Badge } from '@/components/ui/Card';
-import { ArrowRight } from 'lucide-react';
-import { getLocaleCopy, isLocale } from '@/lib/i18n';
+import { ArrowRight, BookOpen, Check, Clock } from 'lucide-react';
+import { OliveBranch } from '@/components/blocks/OliveBranch';
+import { MethodPillars } from '@/components/home/MethodPillars';
+import { LiaFeature } from '@/components/home/LiaFeature';
+import { FinalCTA } from '@/components/home/FinalCTA';
+import { isLocale } from '@/lib/i18n';
+import { getV2Copy } from '@/lib/i18n-v2';
 
-/**
- * Programas index.
- *
- * Spec (levelab-zai-ui-spec-v1.0.json → pages.programs.featured_cards):
- *   Corpo Forte (live), Força na Caneta (live), Leve 7 (coming soon),
- *   Reset 21 (coming soon), Leve 90 (coming soon), Leve 365 (coming soon),
- *   LIA Companion (coming soon).
- *
- * Layout: editorial card grid + short intro. Primary CTA: 'Ver programa'.
- * Coming-soon cards link to /programas (or /lia for LIA Companion) and show
- * an 'Em breve' badge.
- */
 export const metadata: Metadata = {
-  title: 'Programas · LeveLab',
+  title: 'Programas',
   description:
-    'Programas LeveLab — Corpo Forte (8 semanas), Força na Caneta (7 dias) e os próximos percursos: Leve 7, Reset 21, Leve 90, Leve 365 e LIA Companion.',
+    'Programas LeveLab: Corpo Forte (8 semanas) e Força na Caneta (7 dias), com Reader, Workbook e a LIA. Próximas jornadas: Leve 7, Reset 21, Leve 90 e Leve 365.',
   alternates: { canonical: '/pt-br/programas' },
 };
 
-export default async function ProgramasPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+const featured = [
+  {
+    id: 'corpo-forte',
+    eyebrow: 'Programa · 8 semanas',
+    title: 'Corpo Forte',
+    text: 'Força, alimentação, movimento e recuperação para o corpo que você está construindo — com o Método F.O.R.T.E.',
+    includes: ['Guia Premium · 105 páginas', 'Workbook · 77 páginas', 'LIA a acompanhar cada semana'],
+    image: '/images/programs/corpo-forte-card.webp',
+    cover: '/content/thumbs/cover-corpo-forte-guia-p001.webp',
+    alt: 'Mulher sorridente ao ar livre',
+  },
+  {
+    id: 'forca-na-caneta',
+    eyebrow: 'Guia · 7 dias',
+    title: 'Força na Caneta',
+    text: 'Refeições pequenas, proteína e rotina para dias de pouca fome — simples, saboroso e sustentável.',
+    includes: ['Guia Premium · 38 páginas', '10 receitas para repetir', 'Plano B para dias de pouca fome'],
+    image: '/images/programs/forca-na-caneta-card.webp',
+    cover: '/content/thumbs/cover-forca-na-caneta-p001.webp',
+    alt: 'Mulher sorridente de camisa branca entre folhas',
+  },
+];
+
+const roadmap = [
+  { n: '7', unit: 'dias', title: 'Leve 7', text: 'Uma semana para voltar ao que importa.' },
+  { n: '21', unit: 'dias', title: 'Reset 21', text: 'Três semanas para reorganizar a rotina.' },
+  { n: '90', unit: 'dias', title: 'Leve 90', text: 'Três meses para construir continuidade.' },
+  { n: '365', unit: 'dias', title: 'Leve 365', text: 'Um ano de constância e cuidado.' },
+];
+
+export default async function ProgramasPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const copy = getLocaleCopy(locale);
-
-  const items: (ProgramCardItem & { status: 'live' | 'soon' })[] = [
-    {
-      name: 'Corpo Forte',
-      duration: '8 semanas',
-      tagline: 'Corpo Forte não é um tipo de corpo. É uma capacidade.',
-      description:
-        'Programa interativo de 8 semanas com aprendizado, aplicação, experimentos semanais e workbook.',
-      path: '/programas/corpo-forte',
-      accent: 'forest',
-      badge: 'Premium',
-      kind: 'Programa',
-      ctaLabel: 'Ver programa',
-      status: 'live',
-    },
-    {
-      name: 'Força na Caneta',
-      duration: '7 dias',
-      tagline: 'Pequenas escolhas. Grandes mudanças.',
-      description:
-        'Guia educativo de 7 dias sobre organização de refeições, apetite e escolhas.',
-      path: '/programas/forca-na-caneta',
-      accent: 'olive',
-      badge: 'Novo',
-      kind: 'Guia',
-      ctaLabel: 'Ver guia',
-      status: 'live',
-    },
-    {
-      name: 'Leve 7',
-      duration: '7 dias',
-      tagline: 'Uma semana para voltar ao que importa.',
-      description:
-        'Programa curto de 7 dias com pequenos hábitos, acompanhamento e LIA. Em breve.',
-      path: '/programas',
-      accent: 'gold',
-      badge: 'Em breve',
-      kind: 'Programa',
-      ctaLabel: 'Ver programa',
-      status: 'soon',
-    },
-    {
-      name: 'Reset 21',
-      duration: '21 dias',
-      tagline: 'Três semanas para reorganizar a rotina.',
-      description:
-        'Programa de 21 dias com foco em rotina, alimentação, movimento e recuperação. Em breve.',
-      path: '/programas',
-      accent: 'forest',
-      badge: 'Em breve',
-      kind: 'Programa',
-      ctaLabel: 'Ver programa',
-      status: 'soon',
-    },
-    {
-      name: 'Leve 90',
-      duration: '90 dias',
-      tagline: 'Três meses para construir continuidade.',
-      description:
-        'Programa trimestral com acompanhamento estendido, LIA e apoio humano. Em breve.',
-      path: '/programas',
-      accent: 'gold',
-      badge: 'Em breve',
-      kind: 'Programa',
-      ctaLabel: 'Ver programa',
-      status: 'soon',
-    },
-    {
-      name: 'Leve 365',
-      duration: '365 dias',
-      tagline: 'Um ano inteiro de constância e cuidado.',
-      description:
-        'Programa anual com acompanhamento, LIA e conteúdo contínuo. Em breve.',
-      path: '/programas',
-      accent: 'forest',
-      badge: 'Em breve',
-      kind: 'Programa',
-      ctaLabel: 'Ver programa',
-      status: 'soon',
-    },
-    {
-      name: 'LIA Companion',
-      duration: 'Assinatura mensal',
-      tagline: 'A LIA no seu dia, todos os dias.',
-      description:
-        'Assinatura com LIA no dia a dia — rotina, alimentação, movimento e motivação. Em breve.',
-      path: '/lia',
-      accent: 'gold',
-      badge: 'Em breve',
-      kind: 'Assinatura',
-      ctaLabel: 'Ver assinatura',
-      status: 'soon',
-    },
-  ];
+  const copy = getV2Copy(locale);
 
   return (
     <>
-      {/* Hero / intro */}
-      <Section className="pb-10 pt-16 md:pt-24">
-        <SectionHeading
-          align="center"
-          eyebrow="Programas"
-          title="Percursos para uma rotina mais leve"
-          intro="Programas LeveLab — educativos, calmos e estruturados. Cada percurso tem LIA e apoio humano do lado de cá. Sem promessas rápidas, sem pressão clínica."
-        />
-        <div className="mt-8 flex justify-center">
-          <Badge variant="ivory">7 percursos · 2 disponíveis hoje · 5 em breve</Badge>
+      <section className="relative overflow-hidden bg-cream">
+        <OliveBranch className="pointer-events-none absolute -left-12 -top-6 hidden h-56 w-56 text-forest lg:block" thin />
+        <div className="shell-wide relative py-14 lg:py-20">
+          <p className="eyebrow">Programas LeveLab</p>
+          <h1 className="display-xl mt-4 max-w-3xl text-balance">
+            Programas para cada momento da sua <em className="italic text-gold">jornada.</em>
+          </h1>
+          <p className="mt-5 max-w-2xl text-[1.05rem] leading-relaxed text-ink/75">
+            Percursos com método, leitura, prática e acompanhamento. Comece pela abertura gratuita de cada guia e avance
+            no seu ritmo, com a LIA ao lado.
+          </p>
         </div>
-      </Section>
-
-      {/* Program cards editorial grid */}
-      <Section className="py-10 md:py-12">
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {items.map((item) => (
-            <ProgramCard
-              key={item.name}
-              item={item}
-              locale={locale}
-              copy={copy}
-            />
-          ))}
-        </div>
-      </Section>
-
-      {/* Educational strip */}
-      <section className="bg-cream/70 py-16 md:py-20">
-        <Container>
-          <div className="grid gap-6 sm:grid-cols-3">
-            {[
-              {
-                t: 'Educativo, não clínico',
-                d: 'Aprendizado e aplicação. Sem diagnóstico, prescrição ou promessa de resultado.',
-              },
-              {
-                t: 'Calmo e estruturado',
-                d: 'Semanas ou dias com ritmo realista — pequenos hábitos que ficam no tempo.',
-              },
-              {
-                t: 'LIA + apoio humano',
-                d: 'A LIA ao lado do percurso e a Ana/equipa para dúvidas e continuidade.',
-              },
-            ].map((f) => (
-              <div
-                key={f.t}
-                className="rounded-3xl border border-forest/10 bg-white p-6 shadow-soft"
-              >
-                <p className="font-display text-lg font-medium text-ink">{f.t}</p>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{f.d}</p>
-              </div>
-            ))}
-          </div>
-        </Container>
       </section>
 
-      <CTABanner
-        eyebrow="Ainda a decidir?"
-        title="Deixe a LIA ajudar a escolher"
-        description="Conte o seu momento numa conversa curta — a LIA sugere o ponto de entrada, sem compromisso."
-        primaryLabel="Falar com a LIA"
-        primaryHref={`/${locale}/lia`}
-        secondaryLabel="Explorar a loja"
-        secondaryHref={`/${locale}/loja`}
-        tone="forest"
-      />
+      <section className="bg-ivory py-14 lg:py-20" aria-label="Programas em destaque">
+        <div className="shell-wide grid gap-8 lg:grid-cols-2">
+          {featured.map((p) => (
+            <article key={p.id} className="group grid overflow-hidden rounded-lg bg-paper ring-1 ring-line sm:grid-cols-[1fr_0.85fr]">
+              <div className="flex flex-col p-7 sm:p-8">
+                <p className="font-display text-base italic text-gold">{p.eyebrow}</p>
+                <h2 className="mt-1 font-display text-[2.6rem] leading-none text-ink">{p.title}</h2>
+                <p className="mt-4 text-[14.5px] leading-relaxed text-ink/75">{p.text}</p>
+                <ul className="mt-5 space-y-2 text-sm text-ink/80">
+                  {p.includes.map((line) => (
+                    <li key={line} className="flex gap-2">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-forest" /> {line}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-auto flex flex-wrap gap-3 pt-7">
+                  <Link
+                    href={`/${locale}/programas/${p.id}`}
+                    className="inline-flex h-11 items-center gap-2 rounded-md bg-forest px-5 text-sm font-semibold text-ivory hover:bg-forest-2"
+                  >
+                    Conhecer o programa <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <Link
+                    href={`/${locale}/programas/${p.id}/reader`}
+                    className="inline-flex h-11 items-center gap-2 rounded-md border border-forest/30 px-5 text-sm font-semibold text-forest hover:border-forest"
+                  >
+                    <BookOpen className="h-4 w-4" /> Ler a abertura
+                  </Link>
+                </div>
+              </div>
+              <div className="relative min-h-[16rem]">
+                <Image src={p.image} alt={p.alt} fill sizes="(min-width: 1024px) 22vw, 90vw" className="object-cover object-[50%_30%] transition-transform duration-700 group-hover:scale-[1.03]" />
+                <div aria-hidden className="absolute inset-y-0 left-0 hidden w-12 bg-gradient-to-r from-paper to-transparent sm:block" />
+                <div className="absolute bottom-5 right-5 h-32 w-[5.6rem] rotate-3 shadow-[0_18px_30px_-12px_rgba(0,0,0,0.5)]">
+                  <Image src={p.cover} alt="" fill sizes="90px" className="rounded-[2px] object-cover" />
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
 
-      <div className="pb-20 text-center">
-        <a
-          href={`/${locale}`}
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-forest hover:underline"
-        >
-          Voltar ao início
-          <ArrowRight className="h-4 w-4" />
-        </a>
-      </div>
+      <section className="border-t border-line bg-paper py-14 lg:py-20" aria-labelledby="proximas">
+        <div className="shell-wide">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="eyebrow flex items-center gap-2">
+                <Clock className="h-3.5 w-3.5" /> Em preparação
+              </p>
+              <h2 id="proximas" className="display-lg mt-2">Próximas jornadas.</h2>
+            </div>
+            <p className="max-w-md text-sm text-ink/65">
+              Do primeiro passo à continuidade de um ano. Avisamos quando cada jornada abrir.
+            </p>
+          </div>
+          <ol className="mt-10 grid gap-px overflow-hidden rounded-lg bg-line ring-1 ring-line sm:grid-cols-2 lg:grid-cols-4">
+            {roadmap.map((r) => (
+              <li key={r.title} className="bg-ivory p-7">
+                <p className="font-display leading-none text-gold">
+                  <span className="text-[4rem]">{r.n}</span> <span className="text-xl italic">{r.unit}</span>
+                </p>
+                <h3 className="mt-4 font-display text-[1.6rem] text-ink">{r.title}</h3>
+                <p className="mt-1 text-sm text-ink/65">{r.text}</p>
+                <span className="mt-5 inline-flex rounded-full bg-sage/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-forest">
+                  Em breve
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <MethodPillars copy={copy} />
+      <LiaFeature locale={locale} copy={copy} />
+      <FinalCTA
+        locale={locale}
+        title="Encontre o seu ponto de partida."
+        lead="Uma avaliação curta ajuda a escolher o programa certo para este momento."
+        primary="Começar avaliação"
+        secondary="Conversar com a LIA"
+      />
     </>
   );
 }

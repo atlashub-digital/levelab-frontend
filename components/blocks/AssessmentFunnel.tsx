@@ -107,7 +107,7 @@ const STEPS: Step[] = [
   {
     id: 'consent',
     input: 'consent',
-    question: 'Quer ser contactado pela equipa?',
+    question: 'Quer ser contactado pela equipe?',
     helper:
       'Pode partilhar WhatsApp ou email. Esta é uma demonstração de frontend — nada é enviado agora.',
     placeholder: 'WhatsApp ou email (opcional)',
@@ -417,7 +417,7 @@ function ConsentInput({
         />
         <span className="leading-relaxed">
           Entendo que esta é uma demonstração de frontend. Quando o backend
-          existir, autorizo a equipa comercial a entrar em contacto — apenas
+          existir, autorizo a equipe comercial a entrar em contacto — apenas
           com fins comerciais. Nenhum dado de saúde é recolhido aqui.
         </span>
       </label>
