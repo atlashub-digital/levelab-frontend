@@ -1,11 +1,10 @@
 /**
  * LIA transport abstraction.
  *
- * The public LIA chat must NOT call OpenAI/OpenRouter directly from the browser.
- * V1 ships with MockLiaTransport (demoable). The AtendimentoCenterLiaTransport
- * stub will be wired to the Atendimento.Center WebChat SDK in a later pass.
- *
- * Use env: NEXT_PUBLIC_ATENDIMENTO_WEBCHAT_URL
+ * The public LIA chat must NOT call OpenAI/OpenRouter (or LIA Core) directly
+ * from the browser. HttpLiaTransport calls the site's /api/lia/chat route,
+ * which holds the LIA service token server-side. MockLiaTransport remains the
+ * fallback when that route is not configured.
  */
 import { liaMockConversation, type ChatMessage } from '@/lib/content/brand';
 
@@ -108,10 +107,62 @@ export class AtendimentoCenterLiaTransport implements LiaTransport {
   }
 }
 
+const RATE_LIMITED_REPLY =
+  'Conversámos bastante em pouco tempo. Faça uma pequena pausa e volte daqui a alguns minutos — estarei por aqui.';
+
+/**
+ * Real LIA via the site's own server route (/api/lia/chat), which holds the
+ * LIA service token. Falls back to the mock when the route is not configured
+ * (e.g. local dev without LIA_API_URL / LIA_SERVICE_TOKEN).
+ */
+export class HttpLiaTransport implements LiaTransport {
+  private readonly fallback = new MockLiaTransport();
+
+  welcome(locale: string): string {
+    return WELCOME[locale] ?? WELCOME['pt-br'];
+  }
+
+  stream(
+    input: string,
+    ctx: LiaSendContext,
+    handlers: { onToken: (t: string) => void; onDone: (f: string) => void; onError: (e: Error) => void },
+  ): () => void {
+    const controller = new AbortController();
+    const history = ctx.history
+      .filter((m) => !m.partial && m.text.trim())
+      .map((m) => ({ role: m.role === 'lia' ? 'assistant' : 'user', text: m.text }));
+
+    fetch('/api/lia/chat', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ message: input, history }),
+      signal: controller.signal,
+    })
+      .then(async (res) => {
+        if (res.status === 503) {
+          this.fallback.stream(input, ctx, handlers);
+          return;
+        }
+        if (res.status === 429) {
+          handlers.onDone(RATE_LIMITED_REPLY);
+          return;
+        }
+        if (!res.ok) throw new Error(`LIA request failed (${res.status})`);
+        const data = (await res.json()) as { reply?: string };
+        if (!data.reply) throw new Error('Empty LIA reply');
+        handlers.onDone(data.reply);
+      })
+      .catch((err: unknown) => {
+        if (controller.signal.aborted) return;
+        handlers.onError(err instanceof Error ? err : new Error(String(err)));
+      });
+
+    return () => controller.abort();
+  }
+}
+
 export function createLiaTransport(): LiaTransport {
-  // V1 always uses the Mock transport. The stub above documents the future wiring.
-  // const url = process.env.NEXT_PUBLIC_ATENDIMENTO_WEBCHAT_URL;
-  return new MockLiaTransport();
+  return new HttpLiaTransport();
 }
 
 export function seedConversation(locale: string): LiaMessage[] {
