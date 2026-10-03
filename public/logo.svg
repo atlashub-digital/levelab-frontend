@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 96" width="320" height="96" role="img" aria-label="LeveLab">
+  <defs>
+    <linearGradient id="ll-leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b79a5b"/>
+      <stop offset="1" stop-color="#c8b892"/>
+    </linearGradient>
+  </defs>
+  <!-- botanical mark -->
+  <g transform="translate(20 16)">
+    <path d="M28 4C40 14 46 26 46 38c0 14-9 24-18 28C19 62 10 52 10 38 10 26 16 14 28 4z" fill="none" stroke="url(#ll-leaf)" stroke-width="2"/>
+    <path d="M28 8v56" stroke="#b79a5b" stroke-opacity="0.7" stroke-width="1.4"/>
+    <path d="M28 24c6 2 10 6 12 12M28 40c6 2 10 6 12 12" stroke="#b79a5b" stroke-opacity="0.55" stroke-width="1.2" fill="none"/>
+  </g>
+  <!-- wordmark -->
+  <text x="78" y="60" font-family="Georgia, 'Times New Roman', serif" font-size="40" font-weight="600" letter-spacing="-1.5" fill="#15302a">Leve<tspan fill="#b79a5b">Lab</tspan></text>
+  <text x="80" y="80" font-family="Inter, system-ui, sans-serif" font-size="9" letter-spacing="4" fill="#60716b">SAÚDE · BEM-ESTAR · LONGEVIDADE</text>
+</svg>
