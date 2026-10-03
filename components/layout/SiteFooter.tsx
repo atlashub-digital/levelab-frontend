@@ -43,7 +43,7 @@ export function SiteFooter({ locale, copy }: { locale: string; copy: LocaleCopy 
 
   return (
     <footer className="mt-auto border-t border-forest/10 bg-forest text-ivory/90">
-      <div className="relative bg-paper-grain">
+      <div className="relative overflow-hidden bg-paper-grain">
         {/* Subtle olive branch motifs at the corners of the footer top. */}
         <OliveBranch
           orientation="left"
@@ -171,7 +171,7 @@ export function SiteFooter({ locale, copy }: { locale: string; copy: LocaleCopy 
           <p className="font-display text-lg italic text-ivory/90">{siteConfig.closingLine}</p>
           {/* Maquette motif: 3 decorative outline icon-links (Conhecimento /
               Equilíbrio / Vida) sit ABOVE the copyright line. */}
-          <ul className="flex items-center gap-6" aria-label="Valores LeveLab">
+          <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-label="Valores LeveLab">
             {valueIconLinks.map((v) => (
               <li key={v.label}>
                 <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-ivory/70">

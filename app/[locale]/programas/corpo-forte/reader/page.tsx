@@ -25,13 +25,21 @@ export default async function CorpoForteReaderPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ doc?: string }>;
+  searchParams: Promise<{ doc?: string; p?: string }>;
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { doc } = await searchParams;
+  const { doc, p } = await searchParams;
   const asset = findAsset('corpo-forte', doc);
   if (!asset) notFound();
 
-  return <ProductReader locale={locale} asset={asset} />;
+  const page = Number.parseInt(p ?? '', 10);
+
+  return (
+    <ProductReader
+      locale={locale}
+      asset={asset}
+      initialPage={Number.isFinite(page) && page > 0 ? page : undefined}
+    />
+  );
 }
