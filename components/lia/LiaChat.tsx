@@ -7,12 +7,14 @@ import { LIAAvatar } from '@/components/blocks/LIAAvatar';
 import { WhatsAppCTA } from '@/components/blocks/WhatsAppCTA';
 import { liaQuickActions, liaInfo } from '@/lib/content/brand';
 import { siteConfig } from '@/config/site';
-import { createLiaTransport, seedConversation, type LiaMessage } from '@/lib/lia/transport';
+import { createLiaTransport, type LiaMessage } from '@/lib/lia/transport';
 import type { LocaleCopy } from '@/lib/i18n';
 
 export function LiaChat({ locale, copy }: { locale: string; copy: LocaleCopy }) {
   const transportRef = useRef(createLiaTransport());
-  const [messages, setMessages] = useState<LiaMessage[]>(() => seedConversation(locale));
+  const [messages, setMessages] = useState<LiaMessage[]>(() => [
+    { id: 'welcome', role: 'lia', text: transportRef.current.welcome(locale) },
+  ]);
   const [input, setInput] = useState('');
   const [streaming, setStreaming] = useState(false);
   const [partial, setPartial] = useState('');
@@ -68,12 +70,6 @@ export function LiaChat({ locale, copy }: { locale: string; copy: LocaleCopy }) 
     setStreaming(false);
   }
 
-  const history = [
-    { id: 'h1', title: 'Planejar minha rotina matinal', time: 'hoje' },
-    { id: 'h2', title: 'Refeições que sustentam a tarde', time: 'ontem' },
-    { id: 'h3', title: 'Movimento para hoje', time: 'ontem' },
-  ];
-
   return (
     <div className="grid min-h-[calc(100vh-72px)] lg:grid-cols-[260px_1fr]">
       <aside className="hidden flex-col gap-2 border-r border-forest/10 bg-cream/40 p-5 lg:flex">
@@ -84,22 +80,6 @@ export function LiaChat({ locale, copy }: { locale: string; copy: LocaleCopy }) 
         >
           <Plus className="h-4 w-4" /> Nova conversa
         </button>
-        <p className="mt-4 px-2 text-xs font-semibold uppercase tracking-wider text-muted">
-          Histórico
-        </p>
-        <ul className="flex flex-col gap-1">
-          {history.map((h) => (
-            <li key={h.id}>
-              <button
-                type="button"
-                className="w-full rounded-xl px-2 py-2 text-left text-sm text-muted transition-colors hover:bg-forest/5 hover:text-ink"
-              >
-                <span className="block truncate">{h.title}</span>
-                <span className="block text-[11px] text-muted/70">{h.time}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
         <div className="mt-auto rounded-2xl border border-forest/10 bg-white p-3 text-xs text-muted">
           <p className="flex items-center gap-1.5 font-semibold text-forest">
             <ShieldCheck className="h-3.5 w-3.5" /> Modo visitante
@@ -237,9 +217,26 @@ function MessageBubble({
             <span className="lia-dot inline-block h-2 w-2 rounded-full bg-forest/60 [animation-delay:0.4s]" />
           </span>
         ) : (
-          text
+          <RichText text={text} />
         )}
       </div>
     </div>
+  );
+}
+
+/** Renders LIA plain-text replies with line breaks and **bold**, without HTML injection. */
+function RichText({ text }: { text: string }) {
+  return (
+    <span className="whitespace-pre-line">
+      {text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+        part.startsWith('**') && part.endsWith('**') && part.length > 4 ? (
+          <strong key={i} className="font-semibold">
+            {part.slice(2, -2)}
+          </strong>
+        ) : (
+          part
+        ),
+      )}
+    </span>
   );
 }
