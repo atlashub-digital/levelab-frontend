@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { ReaderShell } from '@/components/reader/ReaderShell';
-import { learningContent, getReaderAsset } from '@/lib/content/readers';
-import { corpoForte } from '@/lib/content/programs';
-import { getLocaleCopy, isLocale } from '@/lib/i18n';
+import { ProductReader } from '@/components/reader/ProductReader';
+import { findAsset } from '@/lib/content/library';
+import { isLocale } from '@/lib/i18n';
 import { siteConfig } from '@/config/site';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -26,29 +25,13 @@ export default async function CorpoForteReaderPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ semana?: string }>;
+  searchParams: Promise<{ doc?: string }>;
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { semana } = await searchParams;
-  const copy = getLocaleCopy(locale);
+  const { doc } = await searchParams;
+  const asset = findAsset('corpo-forte', doc);
+  if (!asset) notFound();
 
-  const module = await learningContent.getModule('corpo-forte', semana ?? 'semana-1');
-  if (!module) notFound();
-
-  const asset = getReaderAsset('corpo-forte', 'guia');
-  const weeks = corpoForte.weeks!;
-  const program = corpoForte;
-
-  return (
-    <ReaderShell
-      key={module.week.slug}
-      locale={locale}
-      copy={copy}
-      program={program}
-      module={module}
-      asset={asset}
-      weeks={weeks}
-    />
-  );
+  return <ProductReader locale={locale} asset={asset} />;
 }
