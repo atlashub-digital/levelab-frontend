@@ -3,9 +3,9 @@ import { cn } from '@/lib/utils';
 import { liaInfo } from '@/lib/content/brand';
 
 /**
- * LIA avatar — uses the approved placeholder by default.
- * Integration: replace /public/placeholders/lia-placeholder.svg with the
- * official LIA visual asset from the LeveLab Drive DAM. No invented faces.
+ * LIA avatar — canonical LIA (Visual Identity Lock, Master A crop).
+ * Source: public/images/people/lia/lia-avatar.webp (ASSET-MANIFEST.md).
+ * Never substitute another face.
  */
 export function LIAAvatar({
   size = 48,
@@ -27,7 +27,7 @@ export function LIAAvatar({
     >
       <Image
         src={liaInfo.placeholder}
-        alt="LIA — assistente de bem-estar da LeveLab"
+        alt="LIA, assistente virtual da LeveLab"
         width={size}
         height={size}
         className="h-full w-full object-cover"

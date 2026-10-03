@@ -94,7 +94,7 @@ export const howItWorks: HowStep[] = [
   { n: 2, title: 'LIA', description: 'Conversas práticas sobre rotina e bem-estar.' },
   { n: 3, title: 'Programa', description: 'Aprendizado estruturado em semanas ou dias.' },
   { n: 4, title: 'Progresso', description: 'Microaulas, leitura, exercícios e check-ins.' },
-  { n: 5, title: 'Apoio humano', description: 'Ana e a equipa para tirar dúvidas e continuar.' },
+  { n: 5, title: 'Apoio humano', description: 'Ana e a equipe para tirar dúvidas e continuar.' },
   { n: 6, title: 'Continuidade', description: 'Um plano que segue depois do programa.' },
 ];
 
@@ -121,13 +121,13 @@ export const methodPrinciples: MethodPrinciple[] = [
     key: 'O',
     id: 'organizacao',
     title: 'Organização',
-    description: 'Rotina, ambiente e planeamento.',
+    description: 'Rotina, ambiente e planejamento.',
   },
   {
     key: 'R',
     id: 'recuperacao',
     title: 'Recuperação',
-    description: 'Sono, gestão do stress e tempo para regenerar.',
+    description: 'Sono, gestão do estresse e tempo para regenerar.',
   },
   {
     key: 'T',
@@ -189,7 +189,7 @@ export const liaFaq: FaqItem[] = [
   {
     id: 'whatsapp',
     q: 'Posso continuar no WhatsApp?',
-    a: 'Sim. Pode continuar a conversa no WhatsApp e falar com a equipa de apoio humano da LeveLab.',
+    a: 'Sim. Pode continuar a conversa no WhatsApp e falar com a equipe de apoio humano da LeveLab.',
   },
   {
     id: 'lancamento',
@@ -292,6 +292,6 @@ export const liaInfo = {
   subheadline:
     'Conheça a LIA, assistente virtual da LeveLab Care para rotina, hábitos, conteúdos e acompanhamento de bem-estar.',
   identity: 'LIA é uma assistente virtual de bem-estar da LeveLab.',
-  placeholder: '/placeholders/lia-placeholder.svg',
+  placeholder: '/images/people/lia/lia-avatar.webp',
   statusLabel: 'Online em breve',
 };
