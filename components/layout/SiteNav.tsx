@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { Menu, X, ChevronDown, Globe, Sparkles } from 'lucide-react';
+import { Menu, X, ChevronDown, Globe, Sparkles, UserRound } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { locales, type Locale, type LocaleCopy } from '@/lib/i18n';
 
@@ -104,6 +104,14 @@ export function SiteNav({ locale, copy }: { locale: string; copy: LocaleCopy }) 
           </div>
 
           <Link
+            href={`/${locale}/conta`}
+            className="hidden items-center gap-1.5 rounded-full px-3 py-2.5 text-sm font-medium text-forest hover:bg-forest/5 md:inline-flex"
+          >
+            <UserRound className="h-4 w-4" />
+            Área de membros
+          </Link>
+
+          <Link
             href={`/${locale}/avaliacao`}
             className="hidden items-center gap-2 rounded-full bg-forest px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-all hover:bg-forest-2 hover:shadow-lift md:inline-flex"
           >
@@ -176,9 +184,17 @@ export function SiteNav({ locale, copy }: { locale: string; copy: LocaleCopy }) 
               </div>
             </div>
             <Link
+              href={`/${locale}/conta`}
+              onClick={() => setOpen(false)}
+              className="mt-auto inline-flex items-center justify-center gap-2 rounded-full border border-forest/20 px-5 py-3 text-base font-semibold text-forest"
+            >
+              <UserRound className="h-4 w-4" />
+              Área de membros
+            </Link>
+            <Link
               href={`/${locale}/avaliacao`}
               onClick={() => setOpen(false)}
-              className="mt-auto inline-flex items-center justify-center gap-2 rounded-full bg-forest px-5 py-3 text-base font-semibold text-white"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-forest px-5 py-3 text-base font-semibold text-white"
             >
               <Sparkles className="h-4 w-4" />
               {copy.nav.assessment}
