@@ -35,7 +35,7 @@ export default async function ContatoPage({
           align="center"
           eyebrow="Contacto"
           title="Estamos do lado de cá"
-          intro="Escolha o canal mais confortável para si. A LIA está em lançamento; a Ana e a equipa respondem às dúvidas comerciais."
+          intro="Escolha o canal mais confortável para si. A LIA está em lançamento; a Ana e a equipe respondem às dúvidas comerciais."
         />
       </Section>
 
@@ -114,7 +114,7 @@ export default async function ContatoPage({
               <SectionHeading
                 eyebrow="Mensagem"
                 title="Envie uma mensagem"
-                intro="Preferimos conversa humana. Esta é uma demonstração de frontend — quando o backend estiver pronto, a sua mensagem chega à equipa comercial."
+                intro="Preferimos conversa humana. Esta é uma demonstração de frontend — quando o backend estiver pronto, a sua mensagem chega à equipe comercial."
               />
               <div className="mt-6">
                 <ContactForm locale={locale} />

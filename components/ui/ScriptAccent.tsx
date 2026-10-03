@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
  * Uses the Caveat font (loaded via next/font/google in app/layout.tsx as
  * --font-caveat / --font-script). Rendered sparingly for emotional accents
  * like "Mais conversa. Mais equilíbrio." or "Faz parte desta nova etapa
- * connosco.". Never for long body copy — keep to one or two lines max.
+ * conosco.". Never for long body copy — keep to one or two lines max.
  *
  * Optional trailing decorative heart (maquette motif: small heart doodle
  * beside handwritten accents).

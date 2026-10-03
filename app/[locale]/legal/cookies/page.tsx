@@ -100,7 +100,7 @@ export default async function CookiesPage({
       <CTABanner
         eyebrow="Privacidade"
         title="Questões sobre dados?"
-        description="Consulte a Política de Privacidade ou fale com a equipa."
+        description="Consulte a Política de Privacidade ou fale com a equipe."
         primaryLabel="Política de privacidade"
         primaryHref={`/${locale}/legal/privacidade`}
         secondaryLabel="Ir para contacto"

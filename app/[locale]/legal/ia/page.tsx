@@ -80,7 +80,7 @@ export default async function IaPage({
               Como todo o sistema de IA, a LIA pode cometer erros, gerar
               respostas imperfeitas ou sugerir caminhos que não se aplicam ao
               seu caso. As suas respostas não devem ser tratadas como verdade
-              final. Use o bom senso e, em caso de dúvida, pergunte à equipa
+              final. Use o bom senso e, em caso de dúvida, pergunte à equipe
               humana ou a um profissional de saúde.
             </p>
 
@@ -94,7 +94,7 @@ export default async function IaPage({
 
             <h2>6. Apoio humano</h2>
             <p>
-              Sempre que precisar, pode continuar a conversa com a equipa
+              Sempre que precisar, pode continuar a conversa com a equipe
               humana da LeveLab (Ana Gomes, gestão comercial) ouvirá a sua
               dúvida e indicará o caminho seguinte.
             </p>

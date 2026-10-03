@@ -59,7 +59,7 @@ const guia: ReaderManifest = {
     { n: '15', title: 'FAQ — 25 Perguntas Reais', page: 82, thumb: 83, section: 'apoio', summary: 'As perguntas que uma participante realmente faz, respondidas com clareza.' },
     { n: '17', title: 'GLP-1 Companion — Guia Seguro', page: 88, thumb: 89, section: 'apoio', summary: 'Quando o tratamento muda o apetite, o cuidado continua inteiro. Contexto educativo, nunca prescrição.' },
     { n: '18', title: 'Movimento, Acessibilidade & Limitações', page: 92, thumb: 93, section: 'apoio', summary: 'Corpo Forte não exige um corpo sem limitações: adaptações para cada realidade.' },
-    { n: '19', title: 'Glossário & Conversa com Profissionais', page: 95, thumb: 96, section: 'apoio', summary: 'Os termos essenciais e como preparar a conversa com a sua equipa de saúde.' },
+    { n: '19', title: 'Glossário & Conversa com Profissionais', page: 95, thumb: 96, section: 'apoio', summary: 'Os termos essenciais e como preparar a conversa com a sua equipe de saúde.' },
     { n: '20', title: 'Como Ler Promessas de Saúde', page: 97, thumb: 98, section: 'apoio', summary: 'Como não se perder entre hacks, promessas e certezas da internet.' },
     { n: '21', title: 'Força, Osso, Equilíbrio & Envelhecimento Ativo', page: 101, thumb: 102, section: 'apoio', summary: 'Força, osso e equilíbrio para sustentar capacidade ao longo da vida.' },
   ],
@@ -86,7 +86,7 @@ const workbook: ReaderManifest = {
   ],
   chapters: [
     { n: '00', title: 'Como usar + Mapa Inicial F.O.R.T.E.', page: 4, thumb: 5, section: 'inicio', summary: 'Não é uma prova. O seu ponto de partida em cada pilar, e como quer ser acompanhada pela LIA.' },
-    { n: '01', title: 'Semana 1 — Progresso além da balança', page: 8, thumb: 9, section: 's1', summary: 'Exercícios para registar sinais de progresso que a balança não mostra.' },
+    { n: '01', title: 'Semana 1 — Progresso além da balança', page: 8, thumb: 9, section: 's1', summary: 'Exercícios para registrar sinais de progresso que a balança não mostra.' },
     { n: '02', title: 'Semana 2 — Capacidade e força', page: 14, thumb: 15, section: 's2', summary: 'As capacidades que quer construir e o seu mínimo viável de força.' },
     { n: '03', title: 'Semana 3 — Rotina de força', page: 19, thumb: 20, section: 's3', summary: 'Planeie e registe a sua rotina de treino, com progressão segura.' },
     { n: '04', title: 'Semana 4 — Organização alimentar', page: 23, thumb: 24, section: 's4', summary: 'Organize refeições, proteína e saciedade sem regras rígidas.' },

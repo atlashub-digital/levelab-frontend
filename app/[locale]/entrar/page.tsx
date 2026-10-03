@@ -6,7 +6,7 @@ import { isLocale } from '@/lib/i18n';
 
 export const metadata: Metadata = {
   title: 'Entrar · LeveLab',
-  description: 'Aceda à sua área de membros LeveLab: guias, workbooks e LIA.',
+  description: 'Acesse a sua área de membros LeveLab: guias, workbooks e LIA.',
   robots: { index: false },
 };
 
@@ -32,7 +32,7 @@ export default async function SignInPage({
           Entrar na LeveLab
         </h1>
         <p className="mt-3 text-muted">
-          Use o mesmo email da sua compra para aceder aos seus guias e à LIA.
+          Use o mesmo email da sua compra para acessar aos seus guias e à LIA.
         </p>
         {erro === 'link' ? (
           <p role="alert" className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-800">

@@ -62,7 +62,7 @@ export default async function TermosPage({
             <p>
               A LeveLab não se responsabiliza por decisões tomadas com base
               apenas no conteúdo educativo. As informações são oferecidas de
-              boa-fé, mas cada utilizador é responsável pelas próprias
+              boa-fé, mas cada usuário é responsável pelas próprias
               escolhas de saúde e bem-estar.
             </p>
 

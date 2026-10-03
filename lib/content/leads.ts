@@ -86,7 +86,7 @@ export class MockLeadCaptureProvider implements LeadCaptureProvider {
     return {
       ok: true,
       id: `mock-contact-${Date.now()}`,
-      message: 'Mensagem registada (demo). Em breve, enviada para a equipa.',
+      message: 'Mensagem registada (demo). Em breve, enviada para a equipe.',
     };
   }
 

@@ -27,7 +27,7 @@ const generalFaq = [
   {
     id: 'pagamentos-futuros',
     q: 'Quando vão existir pagamentos?',
-    a: 'A LeveLab Store oficial — com checkout, meios de pagamento e acesso a entitlements — chega em breve. Por enquanto o catálogo é uma pré-visualização; pode reservar ou tirar dúvidas diretamente com a equipa.',
+    a: 'A LeveLab Store oficial — com checkout, meios de pagamento e acesso a entitlements — chega em breve. Por enquanto o catálogo é uma pré-visualização; pode reservar ou tirar dúvidas diretamente com a equipe.',
   },
   {
     id: 'idiomas',

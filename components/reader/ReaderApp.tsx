@@ -310,7 +310,7 @@ export function ReaderApp({ locale, asset, manifest, src, hasAccess, related, in
                 <PdfPage doc={doc} pageNumber={page} zoom={zoom} stage={stageRef} fullscreen={fullscreen} />
               ) : (
                 <div className="flex aspect-[1/1.414] w-full max-w-xl animate-pulse items-center justify-center rounded-lg bg-white/60 text-sm text-muted">
-                  A abrir {asset.title}…
+                  Abrindo {asset.title}…
                 </div>
               )}
 
@@ -378,7 +378,7 @@ export function ReaderApp({ locale, asset, manifest, src, hasAccess, related, in
                 className="mt-2 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-forest/20 text-sm font-medium text-forest transition-colors hover:bg-forest/5"
               >
                 {bookmarked ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
-                {bookmarked ? 'Página guardada' : 'Guardar página'}
+                {bookmarked ? 'Página salva' : 'Salvar página'}
               </button>
               {bookmarks.length ? (
                 <div className="mt-4 flex flex-wrap gap-1.5">
@@ -464,7 +464,7 @@ export function ReaderApp({ locale, asset, manifest, src, hasAccess, related, in
               <div className="flex items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/placeholders/lia-placeholder.svg"
+                  src="/images/people/lia/lia-avatar.webp"
                   alt=""
                   className="h-12 w-12 rounded-full bg-white object-cover ring-2 ring-white"
                 />
@@ -614,7 +614,7 @@ function Toolbar(props: {
         type="button"
         className={cn(btn, props.bookmarked && 'text-gold')}
         onClick={props.onBookmark}
-        aria-label={props.bookmarked ? 'Remover marcador' : 'Guardar página'}
+        aria-label={props.bookmarked ? 'Remover marcador' : 'Salvar página'}
         aria-pressed={props.bookmarked}
       >
         {props.bookmarked ? <BookmarkCheck className="h-[18px] w-[18px]" /> : <Bookmark className="h-[18px] w-[18px]" />}
@@ -633,7 +633,7 @@ function Toolbar(props: {
         type="button"
         className={btn}
         onClick={props.onFullscreen}
-        aria-label={props.fullscreen ? 'Sair de ecrã inteiro' : 'Ecrã inteiro'}
+        aria-label={props.fullscreen ? 'Sair da tela cheia' : 'Tela cheia'}
       >
         {props.fullscreen ? <Minimize2 className="h-[18px] w-[18px]" /> : <Maximize2 className="h-[18px] w-[18px]" />}
       </button>

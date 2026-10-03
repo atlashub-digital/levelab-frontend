@@ -201,7 +201,7 @@ function Paywall({
 
       {signedIn ? (
         <p className="mt-6 text-center text-sm text-muted">
-          Já comprou e ainda não vê o conteúdo? Fale connosco pelo WhatsApp e libertamos o acesso no
+          Já comprou e ainda não vê o conteúdo? Fale conosco pelo WhatsApp e liberamos o acesso no
           seu email.
         </p>
       ) : (

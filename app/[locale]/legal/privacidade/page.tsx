@@ -126,7 +126,7 @@ export default async function PrivacidadePage({
 
       <CTABanner
         eyebrow="Dúvidas?"
-        title="Fale com a equipa"
+        title="Fale com a equipe"
         description="Para exercer um direito ou esclarecer uma dúvida de privacidade, use o canal de contacto."
         primaryLabel="Ir para contacto"
         primaryHref={`/${locale}/contato`}
