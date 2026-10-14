@@ -17,7 +17,7 @@ Pacotes de transferência produzidos nesta sessão (não comitados neste PR):
 - LeveLab_AMF_forca_na_caneta_SOURCE_CANDIDATE_20261014.zip
 - LeveLab_AMF_corpo_forte_SOURCE_CANDIDATE_20261014.zip
 
-O ZIP combinado tem 60 ficheiros enumerados com SHA-256. O draft de ContentManifest v0.2 contém 10 Publications, 1 Collection e 1 Journey (FNC: 7 dias). Nenhum material premium está publicado; todos os statuses são draft e não há MediaAssets de uso comercial.
+O ZIP combinado tem 60 ficheiros enumerados com SHA-256. O draft de ContentManifest v0.2 contém 10 Publications, 1 Collection e 2 Programs (FNC: jornada de 7 dias; Corpo Forte: 8 módulos). Nenhum material premium está publicado; todos os statuses são draft e não há MediaAssets de uso comercial.
 
 ## Contrato de ingestão
 Seguir a integração existente no Golden Pilot EspelhoMeu:
@@ -31,7 +31,7 @@ Seguir a integração existente no Golden Pilot EspelhoMeu:
 - [ ] Colocar sources e hashes no Content Lab sob caminhos canónicos, mantendo IDs de produto/edição.
 - [ ] Adaptar o conversor de Markdown; não codificar claims em componentes React.
 - [ ] Validar manifesto com o package Schema 0.2.0 real; corrigir erros apenas depois de ler contrato.
-- [ ] Mapear Corpo Forte como Program/Journey de módulos de 8 semanas se o Schema suportar (kind=module; não inventar semana).
+- [ ] Validar o Program Corpo Forte de 8 units kind=module já incluído no manifesto; garantir navegação para capítulos individuais.
 - [ ] Integrar preview em branch PR draft, sem merge, e fazer testes 1440/390px e links.
 - [ ] Verificar gating de acesso para premium; não expor conteúdo da Publication draft.
 - [ ] Registar screenshots, logs e SHA, separando QA técnico de QA comercial.
