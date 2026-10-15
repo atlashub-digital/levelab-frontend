@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ShopCatalog } from '@/components/blocks/ShopCatalog';
 import { FAQ } from '@/components/blocks/FAQ';
@@ -36,7 +37,7 @@ const storeFaq = [
   {
     id: 'compra-futura',
     q: 'Já posso comprar agora?',
-    a: 'Esta é uma pré-visualização do catálogo. A LeveLab Store oficial — com checkout, pagamentos e acesso a entitlements — chega em breve. Por enquanto, pode explorar o catálogo e falar com a equipa para reservas ou dúvidas.',
+    a: 'A compra digital será ativada apenas após a homologação editorial e comercial e a configuração do ARO. Até lá, explore o catálogo ou fale com a equipa.',
   },
   {
     id: 'tipos-conteudo',
@@ -65,9 +66,23 @@ export default async function LojaPage({
   const copy = getLocaleCopy(locale);
   void copy; // chrome text already rendered by the layout's SiteNav/SiteFooter.
 
+  const checkoutEnabled = process.env.ARO_CHECKOUT_ENABLED === 'true';
+
   return (
     <>
       <ShopCatalog locale={locale} />
+      {checkoutEnabled ? (
+        <section className="shell py-10" aria-label="Comprar edições homologadas">
+          <div className="rounded-3xl border border-forest/15 bg-cream p-6 md:p-8">
+            <h2 className="font-display text-2xl text-forest">Edições digitais LeveLab</h2>
+            <p className="mt-2 text-sm text-muted">As ofertas e valores são confirmados pelo Atlas Revenue Operations antes do pagamento.</p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link href={`/${locale}/checkout?offer=guia-corpo-forte`} className="rounded-full bg-forest px-5 py-3 text-sm font-semibold text-white">Comprar Corpo Forte</Link>
+              <Link href={`/${locale}/checkout?offer=guia-forca-na-caneta`} className="rounded-full border border-forest px-5 py-3 text-sm font-semibold text-forest">Comprar Força na Caneta</Link>
+            </div>
+          </div>
+        </section>
+      ) : null}
       <FAQ
         eyebrow="FAQ da loja"
         title="Perguntas sobre a loja"

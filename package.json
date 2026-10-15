@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "postinstall": "node -e \"require('fs').copyFileSync(require.resolve('pdfjs-dist/build/pdf.worker.min.mjs'),'public/vendor/pdf.worker.min.mjs')\""
+    "postinstall": "node -e \"require('fs').copyFileSync(require.resolve('pdfjs-dist/build/pdf.worker.min.mjs'),'public/vendor/pdf.worker.min.mjs')\"",
+    "test:aro": "node --experimental-strip-types --test tests/aro-contract.test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
