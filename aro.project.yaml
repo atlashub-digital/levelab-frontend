@@ -1,0 +1,30 @@
+# Desired catalog only; ARO runtime is the financial authority.
+project:
+  slug: levelab
+  name: LeveLab
+  repository: atlashub-digital/levelab-frontend
+  production_url: https://levelab.org
+products:
+  - code: forca-na-caneta
+    name: Força na Caneta
+    type: ebook
+  - code: corpo-forte
+    name: Corpo Forte Premium
+    type: bundle
+offers:
+  # Offer codes are proposals until registered and approved in ARO.
+  - code: levelab-forca-na-caneta-br
+    product: forca-na-caneta
+    market: BR
+    currency: BRL
+    amount_minor: null # requires commercial approval and ARO sync
+    cadence: once
+    entitlements: [levelab:reader:forca-na-caneta]
+  - code: levelab-corpo-forte-br
+    product: corpo-forte
+    market: BR
+    currency: BRL
+    amount_minor: null
+    cadence: once
+    entitlements: [levelab:reader:corpo-forte, levelab:reader:corpo-forte-workbook]
+# Never enable checkout while amount_minor is null or offers unregistered.
