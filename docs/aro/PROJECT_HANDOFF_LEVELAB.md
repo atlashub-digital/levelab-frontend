@@ -29,18 +29,18 @@ offers:
     product: forca-na-caneta
     market: BR
     currency: BRL
-    amount_minor: null
+    amount_minor: 2490 # proposed; approval pending
     cadence: once
     entitlements: ["levelab:reader:forca-na-caneta"]
   - code: levelab-corpo-forte-br
     product: corpo-forte
     market: BR
     currency: BRL
-    amount_minor: null
+    amount_minor: 6990 # proposed; approval pending
     cadence: once
     entitlements: ["levelab:reader:corpo-forte", "levelab:reader:corpo-forte-workbook"]
 ```
-Do not send prices from frontend; ARO verifies the registered offer.
+Proposed values 2490 BRL and 6990 BRL are NOT commercial approvals. Offer status draft until ARO sync and clinical/commercial review. Do not send prices from frontend; ARO verifies the registered offer.
 Review existing legacy offer ids guia-corpo-forte and guia-forca-na-caneta; these
 are UI ids, NOT ARO offer codes or evidence of catalog registration.
 Current premium LIA promises must be separately approved/fulfilled, not assumed.
