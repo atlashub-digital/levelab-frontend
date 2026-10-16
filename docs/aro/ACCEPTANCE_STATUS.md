@@ -4,7 +4,7 @@ Source: atlashub-digital/atlashub-finance/docs/developer/ACCEPTANCE_CHECKLIST.md
 
 ## Contract
 - [x] Code references ARO only; no PixGo/MisticPay/Stripe project adapter.
-- [ ] Offer codes registered and approved in ARO. Draft only; prices deliberately null.
+- [ ] Offer codes registered and approved in ARO. Draft only; proposed 2490/6990 BRL minor units, unapproved.
 - [x] Entitlement mapping explicit in aro.project.yaml.
 - [x] Amount returned by ARO as integer minor units with ISO currency.
 - [x] Code uses normalized checkout states.
@@ -18,9 +18,10 @@ Source: atlashub-digital/atlashub-finance/docs/developer/ACCEPTANCE_CHECKLIST.md
 
 ## Webhook
 - [x] Raw body, X-ARO-Timestamp and HMAC sha256, timing-safe compare.
-- [ ] Durable event ID deduplication and storage: NOT IMPLEMENTED.
-- [ ] Handler 2xx + quick acknowledgement: intentionally fails closed 503.
-- [ ] Duplicate delivery tests: blocked until durable store.
+- [x] Durable event ID receipt implemented in code with unique Supabase event_id and 204 duplicate acknowledgement.
+- [ ] Apply SQL migration, set secure server-only DB credentials and execute duplicate tests in preview.
+- [x] Handler returns 204 after authenticated persistent receipt; fails closed 503 until DB configured.
+- [ ] Duplicate delivery tests: pending against real preview database.
 
 ## Entitlement
 - [x] Server-side ARO resolver helper, ACTIVE / REVOKED / EXPIRED logic.
