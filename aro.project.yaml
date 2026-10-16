@@ -1,30 +1,57 @@
-# Desired catalog only; ARO runtime is the financial authority.
+# ARO V1 catalog | CANONICAL FORMAT | preview-only, never sync as active
+# Monetary figures are PROPOSED for commercial approval; not authorized prices.
+version: "1"
 project:
   slug: levelab
   name: LeveLab
-  repository: atlashub-digital/levelab-frontend
-  production_url: https://levelab.org
+  default_market: BR
+  default_currency: BRL
+
 products:
   - code: forca-na-caneta
-    name: Força na Caneta
+    name: Força na Caneta — Guia Premium
     type: ebook
   - code: corpo-forte
-    name: Corpo Forte Premium
+    name: Corpo Forte — Guia + Workbook
     type: bundle
+
 offers:
-  # Offer codes are proposals until registered and approved in ARO.
   - code: levelab-forca-na-caneta-br
-    product: forca-na-caneta
+    name: Força na Caneta — Brasil (PROPOSTA)
+    products: [forca-na-caneta]
     market: BR
     currency: BRL
-    amount_minor: null # requires commercial approval and ARO sync
+    amount_minor: 2490
     cadence: once
+    payment_methods: [PIX]
     entitlements: [levelab:reader:forca-na-caneta]
+    status: draft
+    metadata:
+      price_approval: pending
+      clinical_approval: pending
   - code: levelab-corpo-forte-br
-    product: corpo-forte
+    name: Corpo Forte + Workbook — Brasil (PROPOSTA)
+    products: [corpo-forte]
     market: BR
     currency: BRL
-    amount_minor: null
+    amount_minor: 6990
     cadence: once
-    entitlements: [levelab:reader:corpo-forte, levelab:reader:corpo-forte-workbook]
-# Never enable checkout while amount_minor is null or offers unregistered.
+    payment_methods: [PIX]
+    entitlements:
+      - levelab:reader:corpo-forte
+      - levelab:reader:corpo-forte-workbook
+    status: draft
+    metadata:
+      price_approval: pending
+      clinical_approval: pending
+
+fulfillment:
+  - entitlement: levelab:reader:forca-na-caneta
+    type: web_access
+    target: /pt-br/programas/forca-na-caneta/reader
+  - entitlement: levelab:reader:corpo-forte
+    type: web_access
+    target: /pt-br/programas/corpo-forte/reader
+  - entitlement: levelab:reader:corpo-forte-workbook
+    type: web_access
+    target: /pt-br/programas/corpo-forte/reader?doc=workbook
