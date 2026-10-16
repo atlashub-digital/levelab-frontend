@@ -5,6 +5,10 @@ ARO_PUBLIC_KEY=
 ARO_SERVER_KEY=
 ARO_WEBHOOK_SECRET=
 ARO_CHECKOUT_ENABLED=false
+ARO_WEBHOOK_ENABLED=false
+ARO_WEBHOOK_DB_URL=
+ARO_WEBHOOK_DB_SERVICE_KEY=
+# Apply sql/aro_webhook_events.sql on an approved LeveLab datastore; do not borrow an unrelated project DB.
 
 Set in approved environment secrets management. Never commit server/public keys
 or provider credentials. For mock tests use a local ARO OpenAPI-compatible
