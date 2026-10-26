@@ -29,14 +29,14 @@ async function parseJson<T>(r: Response): Promise<T> {
   if (!r.ok) throw new Error('ARO_UPSTREAM_' + r.status);
   return r.json() as Promise<T>;
 }
-export async function createCheckout(input: { offer:string; payer:{name:string;email:string}; idempotencyKey:string }):Promise<AroCheckout> {
+export async function createCheckout(input: { offer:string; payer:{name:string;email:string;cpf:string}; idempotencyKey:string }):Promise<AroCheckout> {
   const c=config();
   return parseJson<AroCheckout>(await fetch(c.api+'/v1/checkout-sessions',{
     method:'POST',cache:'no-store',headers:{
       'Content-Type':'application/json','X-ARO-Public-Key':secret('ARO_PUBLIC_KEY'),
       'Idempotency-Key':input.idempotencyKey
     },body:JSON.stringify({project:c.project,offer:input.offer,market:'BR',country:'BR',
-      currency:'BRL',payment_method:'PIX',payer:input.payer})
+      currency:'BRL',payment_method:'PIX',payer:{name:input.payer.name,email:input.payer.email,document:input.payer.cpf}})
   }));
 }
 export async function readCheckout(id:string,checkoutSecret:string):Promise<AroCheckout>{

@@ -30,8 +30,12 @@ export async function POST(req:Request) {
   if(!allowedEmail(String(payer.email))){
     return NextResponse.json({error:'CHECKOUT_NOT_AVAILABLE_FOR_ACCOUNT'},{status:403});
   }
+  const cpf=typeof payer.cpf==='string'?payer.cpf.replace(/\D/g,''):'';
+  if(cpf.length!==11 || /^([0-9])\1+$/.test(cpf)){
+    return NextResponse.json({error:'INVALID_CPF'},{status:400});
+  }
   try {
-    const checkout=await createCheckout({offer:String(p.offer),payer:{name:payer.name,email:payer.email},idempotencyKey:key});
+    const checkout=await createCheckout({offer:String(p.offer),payer:{name:payer.name,email:payer.email,cpf},idempotencyKey:key});
     return NextResponse.json(checkout,{status:201,headers:{'Cache-Control':'no-store'}});
   }catch{
     return NextResponse.json({error:'ARO_UNAVAILABLE'},{status:503});
