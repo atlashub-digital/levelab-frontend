@@ -5,6 +5,8 @@ import { Mail, KeyRound, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
 
+// Email OTP code is opt-in: requires a verified Supabase template/Resend delivery.
+const emailCodeEnabled = process.env.NEXT_PUBLIC_LEVELAB_EMAIL_OTP_CODE_ENABLED === 'true';
 type Mode = 'link' | 'password';
 
 export function SignInForm({ next }: { next: string }) {
@@ -13,6 +15,7 @@ export function SignInForm({ next }: { next: string }) {
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
+  const [code, setCode] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   async function submit(e: React.FormEvent) {
@@ -43,6 +46,25 @@ export function SignInForm({ next }: { next: string }) {
     else window.location.assign(next);
   }
 
+  async function verifyCode(e: React.FormEvent) {
+    e.preventDefault();
+    if (!emailCodeEnabled || !/^\d{6,8}$/.test(code.trim())) {
+      setError('Introduza o código de 6 a 8 dígitos enviado por email.');
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    const supabase = createSupabaseBrowserClient();
+    const { error } = await supabase.auth.verifyOtp({
+      email: email.trim(),
+      token: code.trim(),
+      type: 'email',
+    });
+    setBusy(false);
+    if (error) setError('Código inválido ou expirado. Peça um novo código e tente novamente.');
+    else window.location.assign(next);
+  }
+
   if (sent) {
     return (
       <div className="rounded-3xl border border-forest/10 bg-white p-8 text-center shadow-soft">
@@ -50,11 +72,37 @@ export function SignInForm({ next }: { next: string }) {
         <h2 className="mt-4 font-display text-2xl text-ink">Verifique o seu email</h2>
         <p className="mt-2 text-muted">
           Enviámos um link de acesso para <strong className="text-ink">{email}</strong>. Abra-o
-          neste dispositivo para entrar.
+          neste dispositivo para entrar. Se tiver recebido também um código,
+          pode introduzi-lo abaixo.
         </p>
+        {emailCodeEnabled ? (
+          <form onSubmit={verifyCode} className="mt-6 text-left">
+            <label htmlFor="email-otp-code" className="block text-sm font-semibold text-ink">
+              Código de acesso recebido por email
+            </label>
+            <input
+              id="email-otp-code"
+              type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              pattern="[0-9]{6,8}"
+              minLength={6}
+              maxLength={8}
+              required
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, ''))}
+              placeholder="000000"
+              className="mt-2 h-12 w-full rounded-xl border border-forest/20 bg-cream/30 px-4 text-ink focus:border-forest focus:outline-none"
+            />
+            {error ? <p role="alert" className="mt-2 text-sm text-red-700">{error}</p> : null}
+            <button type="submit" disabled={busy} className="mt-4 h-12 w-full rounded-full bg-forest font-semibold text-white disabled:opacity-50">
+              {busy ? 'A verificar…' : 'Validar código e entrar'}
+            </button>
+          </form>
+        ) : null}
         <button
           type="button"
-          onClick={() => setSent(false)}
+          onClick={() => { setSent(false); setCode(''); setError(null); }}
           className="mt-6 text-sm font-medium text-forest underline-offset-4 hover:underline"
         >
           Usar outro email
@@ -126,7 +174,7 @@ export function SignInForm({ next }: { next: string }) {
         </>
       ) : (
         <p className="mt-3 text-sm text-muted">
-          Sem password: enviamos um link seguro para o seu email.
+          Sem senha: enviamos um link seguro para o seu email. O acesso por código fica disponível após a configuração do serviço de envio.
         </p>
       )}
 

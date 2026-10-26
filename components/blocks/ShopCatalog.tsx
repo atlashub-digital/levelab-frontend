@@ -25,12 +25,10 @@ import {
 } from '@/lib/content/store';
 import type { Locale } from '@/lib/i18n';
 
-type SortKey = 'recomendados' | 'preco-asc' | 'preco-desc' | 'novidades';
+type SortKey = 'recomendados' | 'novidades';
 
 const sortOptions: { key: SortKey; label: string }[] = [
   { key: 'recomendados', label: 'Mais relevantes' },
-  { key: 'preco-asc', label: 'Preço ↑' },
-  { key: 'preco-desc', label: 'Preço ↓' },
   { key: 'novidades', label: 'Novidades' },
 ];
 
@@ -124,56 +122,6 @@ function CheckboxOption({
   );
 }
 
-/**
- * Mock price range slider — visual element only. Maquette shows a range
- * slider with two handles. Spec: prices are intentionally undefined in V1
- * (catalogue_ready_checkout_later + price_rule "Do not hard-code the Euro
- * prices"). The slider is a placeholder until the catalog provider returns
- * prices; selecting a range does NOT filter the list. Documented in copy.
- */
-function PriceRangeSlider() {
-  const [range, setRange] = useState<[number, number]>([0, 100]);
-  const min = 0;
-  const max = 100;
-  const pctLeft = ((range[0] - min) / (max - min)) * 100;
-  const pctRight = ((range[1] - min) / (max - min)) * 100;
-  return (
-    <div className="pt-2">
-      <div className="relative h-2 rounded-full bg-forest/10">
-        <div
-          className="absolute h-full rounded-full bg-gradient-gold"
-          style={{ left: `${pctLeft}%`, right: `${100 - pctRight}%` }}
-        />
-        <input
-          type="range"
-          min={min}
-          max={max}
-          value={range[0]}
-          onChange={(e) => setRange(([_, hi]) => [Math.min(Number(e.target.value), hi), hi])}
-          aria-label="Preço mínimo"
-          className="pointer-events-auto absolute inset-0 h-2 w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-forest [&::-webkit-slider-thumb]:bg-white"
-        />
-        <input
-          type="range"
-          min={min}
-          max={max}
-          value={range[1]}
-          onChange={(e) => setRange(([lo]) => [lo, Math.max(Number(e.target.value), lo)])}
-          aria-label="Preço máximo"
-          className="pointer-events-auto absolute inset-0 h-2 w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-forest [&::-webkit-slider-thumb]:bg-white"
-        />
-      </div>
-      <div className="mt-3 flex items-center justify-between text-[11px] text-muted">
-        <span>€{range[0]}</span>
-        <span>€{range[1]}</span>
-      </div>
-      <p className="mt-2 text-[11px] italic text-muted">
-        Filtro visual — preços serão divulgados quando a LeveLab Store abrir.
-      </p>
-    </div>
-  );
-}
-
 export function ShopCatalog({ locale }: { locale: Locale }) {
   const [selectedCats, setSelectedCats] = useState<Set<ProductCategory>>(
     () => new Set(ALL_CATEGORIES),
@@ -222,14 +170,6 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
     }
     const sorted = [...list];
     switch (sort) {
-      case 'preco-asc':
-        // No prices in V1 — fall back to alphabetical ascending (mock).
-        sorted.sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'));
-        break;
-      case 'preco-desc':
-        // No prices in V1 — fall back to alphabetical descending (mock).
-        sorted.sort((a, b) => b.title.localeCompare(a.title, 'pt-BR'));
-        break;
       case 'novidades':
         sorted.sort((a, b) => {
           const an = a.badge === 'Novo' ? 0 : 1;
@@ -382,7 +322,7 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
       </FilterAccordion>
 
       <FilterAccordion title="Preço">
-        <PriceRangeSlider />
+        <p className="text-xs text-muted">O preço confirmado aparece no produto correspondente. Outras ofertas ainda estão em preparação.</p>
       </FilterAccordion>
     </div>
   );
@@ -406,9 +346,9 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
             </h1>
             <p className="mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-muted">
               Conteúdo premium com método LeveLab — aprendizado, aplicação e
-              progresso. Cada item é educativo e calmo; nada de promessas
-              rápidas ou clínicas. Preços serão divulgados quando a LeveLab
-              Store oficial estiver aberta.
+              progresso. Os produtos aprovados apresentam o preço individual;
+              as ofertas em revisão continuam assinaladas como em preparação.
+              Sem promessas de resultados ou subscrições automáticas.
             </p>
           </div>
         </div>
@@ -463,21 +403,27 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
                 </div>
               </div>
               <div className="relative rounded-3xl border border-ivory/15 bg-ivory/5 p-6 backdrop-blur">
-                {/* Maquette: circular gold ValueBadge (-20%) on the right. */}
+                {/* V2: sem desconto fictício; o workbook já integra a compra. */}
                 <div className="absolute -right-3 -top-6 z-10">
-                  <ValueBadge size="md" eyebrow="20% no bundle">
-                    Poupa já
+                  <ValueBadge size="md" eyebrow="Acompanha">
+                    Workbook
                   </ValueBadge>
                 </div>
                 <p className="font-display text-xl font-medium text-ivory">
                   Bundle essencial
                 </p>
                 <p className="mt-1 text-sm text-ivory/70">
-                  Programa + Workbook + Conteúdos.
+                  Livro digital + Caderno O Meu Corpo em Construção.
                 </p>
                 <p className="mt-3 text-[11px] uppercase tracking-wider text-gold-soft">
-                  Compra futura via LeveLab Store
+                  Oferta editorial validada · pagamento PIX em integração
                 </p>
+                {featuredBundle.price != null ? (
+                  <p className="mt-4 font-display text-3xl text-ivory">
+                    {featuredBundle.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                    <span className="ml-2 font-sans text-xs text-ivory/70">pagamento único</span>
+                  </p>
+                ) : null}
                 <div className="mt-6">
                   {/* Maquette: solid dark green block button "Ver detalhes". */}
                   <Button
@@ -490,7 +436,7 @@ export function ShopCatalog({ locale }: { locale: Locale }) {
                   </Button>
                 </div>
                 <p className="mt-3 text-[11px] text-ivory/60">
-                  Checkout chega em breve com a LeveLab Store oficial.
+                  Checkout PIX via ARO será disponibilizado após os testes.
                 </p>
               </div>
             </div>

@@ -4,10 +4,10 @@
  * Spec source: levelab-zai-ui-spec-v1.0.json → pages.store.cards_initial +
  *   non_negotiables ("Do not hard-code unconfirmed prices").
  *
- * V1 commerce phase: catalogue_ready_checkout_later. Prices are NOT set —
- * `price` and `compareAtPrice` remain `undefined` until the LeveLab Backend
- * Store API is wired (phase_2). The ProductCard component renders nothing
- * for price when `product.price` is undefined.
+ * LeveLab V2: a precificação exibida de Corpo Forte (R$ 39,90) foi aprovada
+ * pela Direção em 26/10/2026. Não constitui ativação de checkout ARO.
+ * Outros preços continuam indefinidos. O catálogo ARO é autoritativo
+ * sobre o valor cobrado em checkout, não os cartões desta vitrine.
  *
  * The future LeveLab Store will pull live catalog + entitlements from the
  * backend via the `ProductCatalogProvider` adapter exported below.
@@ -59,47 +59,50 @@ export const products: Product[] = [
   {
     id: 'corpo-forte',
     slug: 'corpo-forte',
-    title: 'Corpo Forte',
-    subtitle: 'Programa Interativo · 8 Semanas',
-    category: 'programas',
-    format: 'Programa + Reader + Workbook',
-    badge: 'Premium',
-    tagline: 'Corpo Forte não é um tipo de corpo. É uma capacidade.',
+    title: 'Corpo Forte — Além da Balança',
+    subtitle: 'eBook + workbook O Meu Corpo em Construção',
+    category: 'e-books',
+    format: 'Livro digital + Workbook',
+    price: 39.90,
+    badge: 'Livro + Workbook',
+    tagline: 'O corpo é muito mais do que um número na balança.',
     description:
-      'Programa interativo de 8 semanas com aprendizado, aplicação, experimentos semanais e workbook.',
+      'Leitura educativa de oito semanas com o Método F.O.R.T.E. e workbook integral incluído. Compra única; acompanhamento LIA não incluído nesta oferta.',
     path: '/programas/corpo-forte',
     accent: 'forest',
     status: 'live',
   },
   {
+    id: 'tomei-mounjaro',
+    slug: 'tomei-mounjaro',
+    title: 'Tomei Mounjaro. E Agora?',
+    subtitle: 'eBook educativo · Série Me Sentir Leve',
+    category: 'e-books',
+    format: 'eBook digital',
+    badge: 'Em preparação',
+    tagline: 'O peso pode mudar. Mas como cuidar de tudo o resto?',
+    description:
+      'Uma leitura educativa independente sobre dúvidas e cuidados que podem acompanhar o tratamento, sem indicação, prescrição ou promessa de resultados.',
+    path: '/programas/tomei-mounjaro',
+    accent: 'sage',
+    status: 'soon',
+    comingSoon: true,
+  },
+  {
     id: 'forca-na-caneta',
     slug: 'forca-na-caneta',
     title: 'Força na Caneta',
-    subtitle: 'Guia Educativo · 7 Dias',
+    subtitle: 'Guia educativo · 7 dias',
     category: 'guias',
-    format: 'Guia + Reader',
-    badge: 'Novo',
+    format: 'Guia digital',
+    badge: 'Em revisão editorial',
     tagline: 'Pequenas escolhas. Grandes mudanças.',
     description:
-      'Guia educativo de 7 dias sobre organização de refeições, apetite e escolhas.',
+      'Título do catálogo anterior em revisão editorial. O leitor demonstrativo mantém-se, sem nova oferta comercial até à homologação.',
     path: '/programas/forca-na-caneta',
     accent: 'olive',
-    status: 'live',
-  },
-  {
-    id: 'workbook-corpo-forte',
-    slug: 'workbook-corpo-forte',
-    title: 'Workbook Corpo Forte',
-    subtitle: 'Material de aplicação · 77 páginas',
-    category: 'workbooks',
-    format: 'Workbook PDF',
-    badge: 'Premium',
-    tagline: 'Onde o aprendizado vira prática.',
-    description:
-      'Workbook premium para acompanhar o programa — exercícios, check-ins e espaço de escrita.',
-    path: '/programas/corpo-forte',
-    accent: 'sage',
-    status: 'live',
+    status: 'soon',
+    comingSoon: true,
   },
   {
     id: 'leve-7',
@@ -191,7 +194,8 @@ export const products: Product[] = [
       'Coleção de receitas para organizar refeições que sustentam energia e rotina.',
     path: '/conteudos',
     accent: 'olive',
-    status: 'live',
+    status: 'soon',
+    comingSoon: true,
   },
   {
     id: 'guia-do-sono',
@@ -205,7 +209,8 @@ export const products: Product[] = [
       'Guia educativo sobre sono, descanso e recuperação como parte do progresso.',
     path: '/conteudos',
     accent: 'sage',
-    status: 'live',
+    status: 'soon',
+    comingSoon: true,
   },
   {
     id: 'pequenos-habitos',
@@ -219,7 +224,8 @@ export const products: Product[] = [
       'E-book sobre construir hábitos pequenos, sustentáveis e constância no tempo.',
     path: '/conteudos',
     accent: 'olive',
-    status: 'live',
+    status: 'soon',
+    comingSoon: true,
   },
 ];
 
@@ -237,17 +243,18 @@ export type Bundle = {
 };
 
 export const featuredBundle: Bundle = {
-  id: 'bundle-levelab-essencial',
-  title: 'Bundle LeveLab Essencial',
-  subtitle: 'Programa + Workbook + Conteúdos',
+  id: 'corpo-forte-com-workbook',
+  title: 'Corpo Forte — Além da Balança',
+  subtitle: 'Livro digital + workbook incluído',
   description:
-    'A experiência essencial da LeveLab: o programa Corpo Forte, o workbook de aplicação e conteúdos editoriais para acompanhar a sua rotina.',
-  discountLabel: '-20%',
+    'Uma única compra inclui o eBook Corpo Forte e o caderno complementar O Meu Corpo em Construção. Leitura e exercícios opcionais durante oito semanas.',
+  price: 39.90,
+  discountLabel: 'Workbook incluído',
   includes: [
-    'Programa Corpo Forte · 8 semanas',
-    'Workbook Premium · 77 páginas',
-    'Conteúdos editoriais LeveLab',
-    'LIA ao longo de todo o programa',
+    'eBook Corpo Forte — Além da Balança',
+    'Workbook O Meu Corpo em Construção incluído',
+    'Oito semanas de leituras e propostas de reflexão',
+    'Pagamento único — sem assinatura ou LIA+ incluída',
   ],
   path: '/programas/corpo-forte',
 };
