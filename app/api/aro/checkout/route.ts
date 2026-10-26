@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { checkoutEnabled,createCheckout } from '@/lib/aro/client';
 export const runtime='nodejs';
-const offers=new Set(['levelab-forca-na-caneta-br','levelab-corpo-forte-br']);
+// Força na Caneta is NOT published (editorial review) — do not re-add without direction.
+const offers=new Set(['levelab-corpo-forte-br']);
 export async function POST(req:Request) {
   if (!checkoutEnabled()) return NextResponse.json({error:'CHECKOUT_NOT_READY'},{status:503});
   let payload:unknown;

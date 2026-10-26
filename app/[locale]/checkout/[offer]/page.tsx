@@ -5,7 +5,6 @@ export default async function Page({params}:{params:Promise<{locale:string;offer
  const {locale,offer}=await params;
  if(!['pt-br','pt-pt','en','es'].includes(locale))notFound();
  const titles:Record<string,string>={
-   'levelab-forca-na-caneta-br':'Força na Caneta',
    'levelab-corpo-forte-br':'Corpo Forte Premium'
  };
  if(!titles[offer])notFound();
