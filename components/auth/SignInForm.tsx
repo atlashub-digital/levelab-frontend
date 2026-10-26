@@ -48,7 +48,7 @@ export function SignInForm({ next }: { next: string }) {
 
   async function verifyCode(e: React.FormEvent) {
     e.preventDefault();
-    if (!emailCodeEnabled || !/^\\d{6,8}$/.test(code.trim())) {
+    if (!emailCodeEnabled || !/^\d{6,8}$/.test(code.trim())) {
       setError('Introduza o código de 6 a 8 dígitos enviado por email.');
       return;
     }
