@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { ArrowUpRight, BookOpen, Heart, NotebookPen } from 'lucide-react';
 
 const editorialVolumes = [
