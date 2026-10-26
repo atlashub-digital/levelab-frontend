@@ -1,5 +1,16 @@
 import { NextResponse } from 'next/server';
 import { checkoutEnabled,createCheckout } from '@/lib/aro/client';
+
+/**
+ * Controlled-test gate (mission P0 2026-10-26): when
+ * ARO_CHECKOUT_ALLOWED_EMAILS is set, ONLY those identities may create a
+ * checkout — the purchase stays closed to the general public until the
+ * direction authorizes commercial opening.
+ */
+function allowedEmail(email:string):boolean{
+  const list=(process.env.ARO_CHECKOUT_ALLOWED_EMAILS??'').split(',').map(v=>v.trim().toLowerCase()).filter(Boolean);
+  return list.length===0 || list.includes(email.toLowerCase());
+}
 export const runtime='nodejs';
 // Força na Caneta is NOT published (editorial review) — do not re-add without direction.
 const offers=new Set(['levelab-corpo-forte-br']);
@@ -15,6 +26,9 @@ export async function POST(req:Request) {
     || typeof payer?.name!=='string' || payer.name.length<2 || typeof payer.email!=='string'
     || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(payer.email)) {
     return NextResponse.json({error:'INVALID_REQUEST'},{status:400});
+  }
+  if(!allowedEmail(String(payer.email))){
+    return NextResponse.json({error:'CHECKOUT_NOT_AVAILABLE_FOR_ACCOUNT'},{status:403});
   }
   try {
     const checkout=await createCheckout({offer:String(p.offer),payer:{name:payer.name,email:payer.email},idempotencyKey:key});
