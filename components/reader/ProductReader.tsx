@@ -9,6 +9,7 @@ import { coverSrc, manifests } from '@/lib/content/manifests';
 import { getSession } from '@/lib/supabase/server';
 import { getLibrary } from '@/lib/levelab-api';
 import { cn } from '@/lib/utils';
+import { checkoutEnabled } from '@/lib/aro/client';
 
 const programNames: Record<string, string> = {
   'corpo-forte': 'Corpo Forte',
@@ -186,14 +187,20 @@ function Paywall({
                   </li>
                 ))}
               </ul>
-              <WhatsAppCTA
+              {checkoutEnabled() && id === asset.offerId ? (
+                <Link href={`/${locale}/checkout/${asset.product === 'corpo-forte'
+                  ? 'levelab-corpo-forte-br' : 'levelab-forca-na-caneta-br'}`}
+                  className="mt-6 inline-flex w-full justify-center rounded-full bg-forest px-5 py-3 font-semibold text-white">
+                  Pagar com ARO
+                </Link>
+              ) : <WhatsAppCTA
                 phone={siteConfig.commercialWhatsappNumber}
                 text={`Olá! Quero adquirir: ${offer.title}.`}
                 variant={i === 1 ? 'gold' : 'primary'}
                 className="mt-6 w-full justify-center"
               >
                 Quero este acesso
-              </WhatsAppCTA>
+              </WhatsAppCTA>}
             </div>
           );
         })}
