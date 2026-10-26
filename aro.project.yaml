@@ -1,5 +1,6 @@
-# ARO V1 catalog | CANONICAL FORMAT | preview-only, never sync as active
-# Monetary figures are PROPOSED for commercial approval; not authorized prices.
+# ARO V1 catalog | STAGING CONTRACT ONLY | all offers remain draft
+# Corpo Forte R$ 39,90 confirmed by Direction 26/10/2026; others subject to final approval.
+# DO NOT sync as active until offer registration, access gates and controlled PIX test pass.
 version: "1"
 project:
   slug: levelab
@@ -14,6 +15,9 @@ products:
   - code: corpo-forte
     name: Corpo Forte — Guia + Workbook
     type: bundle
+  - code: tomei-mounjaro
+    name: Tomei Mounjaro. E Agora?
+    type: ebook
 
 offers:
   - code: levelab-forca-na-caneta-br
@@ -28,13 +32,14 @@ offers:
     status: draft
     metadata:
       price_approval: pending
-      clinical_approval: pending
+      editorial_review: forca_na_caneta_pending
+      aro_registration: pending
   - code: levelab-corpo-forte-br
     name: Corpo Forte + Workbook — Brasil (PROPOSTA)
     products: [corpo-forte]
     market: BR
     currency: BRL
-    amount_minor: 6990
+    amount_minor: 3990
     cadence: once
     payment_methods: [PIX]
     entitlements:
@@ -42,10 +47,29 @@ offers:
       - levelab:reader:corpo-forte-workbook
     status: draft
     metadata:
+      price_approval: confirmed_by_direction_2026-10-26
+      editorial_release: confirmed_by_direction_2026-10-26
+      aro_registration: pending
+  - code: levelab-tomei-mounjaro-br
+    name: Tomei Mounjaro. E Agora? — Brasil (RASCUNHO)
+    products: [tomei-mounjaro]
+    market: BR
+    currency: BRL
+    amount_minor: 3990
+    cadence: once
+    payment_methods: [PIX]
+    entitlements: [levelab:reader:tomei-mounjaro]
+    status: draft
+    metadata:
       price_approval: pending
-      clinical_approval: pending
+      editorial_release: confirmed_by_direction_2026-10-26
+      aro_registration: pending
+      regulatory_copy_review: required_before_public_campaign
 
 fulfillment:
+  - entitlement: levelab:reader:tomei-mounjaro
+    type: web_access
+    target: /pt-br/programas/tomei-mounjaro/reader
   - entitlement: levelab:reader:forca-na-caneta
     type: web_access
     target: /pt-br/programas/forca-na-caneta/reader
